@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estimation Science & Math Lab</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        },
+                        neon: {
+                            cyan: '#06b6d4',
+                            emerald: '#10b981',
+                            amber: '#f59e0b',
+                            rose: '#f43f5e',
+                            purple: '#a855f7'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js CDN for 3D Volume Mode -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- OrbitControls for Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- Chart.js for Performance Tracking -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #090d16;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Custom Glassmorphism Styling */
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card {
+            background: rgba(31, 41, 55, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glass-input {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+        }
+        /* Custom Glowing Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.8);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.4);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.8);
+        }
+        /* Range Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            height: 8px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #6366f1;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.8);
+            transition: transform 0.1s, background 0.2s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: #818cf8;
+        }
+        /* Glowing Text FX */
+        .text-glow-cyan {
+            text-shadow: 0 0 10px rgba(6, 182, 212, 0.6);
+        }
+        .text-glow-brand {
+            text-shadow: 0 0 10px rgba(99, 102, 241, 0.6);
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col antialiased select-none overflow-hidden">
+
+    <!-- Top Navigation Header -->
+    <header class="h-16 border-b border-gray-800/80 glass-panel flex items-center justify-between px-4 md:px-6 z-20 shrink-0">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-neon-cyan flex items-center justify-center shadow-lg shadow-brand-500/20">
+                <i class="fa-solid to-fa-compass-drafting text-xl text-white"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg tracking-wide bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+                    ESTIMATION <span class="text-brand-400 font-normal text-xs px-2 py-0.5 rounded-full bg-brand-900/50 border border-brand-500/30">PRO LAB</span>
+                </h1>
+                <p class="text-xs text-gray-400 hidden sm:block">Interactive Multi-Dimensional Estimation Suite</p>
+            </div>
+        </div>
+
+        <!-- Mode Select Tabs -->
+        <nav class="flex items-center space-x-1 md:space-x-2 bg-slate-900/80 p-1 rounded-xl border border-gray-800">
+            <button onclick="switchMode('1d')" id="tab-1d" class="nav-tab px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center space-x-1.5 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-ruler-horizontal text-neon-cyan"></i>
+                <span>1D Length</span>
+            </button>
+            <button onclick="switchMode('2d')" id="tab-2d" class="nav-tab px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center space-x-1.5 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-shapes text-neon-emerald"></i>
+                <span>2D Area</span>
+            </button>
+            <button onclick="switchMode('3d')" id="tab-3d" class="nav-tab px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center space-x-1.5 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-cube text-neon-amber"></i>
+                <span>3D Volume</span>
+            </button>
+            <button onclick="switchMode('fermi')" id="tab-fermi" class="nav-tab px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center space-x-1.5 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-brain text-neon-purple"></i>
+                <span>Fermi Mode</span>
+            </button>
+        </nav>
+
+        <!-- Stats & Controls Bar -->
+        <div class="flex items-center space-x-3">
+            <div class="hidden lg:flex items-center space-x-4 px-3 py-1.5 rounded-xl bg-slate-900/60 border border-gray-800/80 text-xs">
+                <div class="flex items-center space-x-1.5">
+                    <span class="text-gray-400">Score:</span>
+                    <span id="stat-score" class="font-bold text-brand-400 mono text-sm">0</span>
+                </div>
+                <div class="h-3 w-px bg-gray-800"></div>
+                <div class="flex items-center space-x-1.5">
+                    <span class="text-gray-400">Streak:</span>
+                    <span id="stat-streak" class="font-bold text-neon-emerald mono text-sm">0 🔥</span>
+                </div>
+                <div class="h-3 w-px bg-gray-800"></div>
+                <div class="flex items-center space-x-1.5">
+                    <span class="text-gray-400">Avg Acc:</span>
+                    <span id="stat-accuracy" class="font-bold text-neon-cyan mono text-sm">--</span>
+                </div>
+            </div>
+
+            <!-- Dashboard Analytics Button -->
+            <button onclick="toggleAnalyticsModal()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-gray-700 flex items-center justify-center text-gray-300 hover:text-white transition" title="View Statistics & History">
+                <i class="fa-solid fa-chart-line"></i>
+            </button>
+            <!-- Settings Toggle Button -->
+            <button onclick="toggleSettingsModal()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-gray-700 flex items-center justify-center text-gray-300 hover:text-white transition" title="Settings">
+                <i class="fa-solid fa-gear"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace Grid -->
+    <main class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+
+        <!-- Left Interactive Workbench / Canvas -->
+        <section class="flex-1 flex flex-col relative bg-slate-950/60 overflow-hidden">
+            
+            <!-- Canvas HUD Overlay (Top Info Bar) -->
+            <div class="absolute top-4 left-4 right-4 z-10 flex justify-between items-center pointer-events-none">
+                <div class="glass-panel px-4 py-2 rounded-xl flex items-center space-x-3 pointer-events-auto border border-gray-700/50">
+                    <span id="hud-level-badge" class="px-2 py-0.5 rounded bg-brand-500/20 text-brand-400 text-xs font-semibold uppercase border border-brand-500/30">Level 1</span>
+                    <h2 id="hud-title" class="text-sm font-semibold text-gray-200">Length Estimation</h2>
+                </div>
+
+                <!-- Timer & Hint Widget -->
+                <div class="flex items-center space-x-2 pointer-events-auto">
+                    <div id="timer-box" class="hidden glass-panel px-3 py-1.5 rounded-xl border border-gray-700/50 text-xs mono text-neon-amber font-semibold items-center space-x-1.5">
+                        <i class="fa-regular fa-clock"></i>
+                        <span id="timer-val">00:30</span>
+                    </div>
+
+                    <button onclick="toggleHint()" class="glass-panel px-3 py-1.5 rounded-xl border border-gray-700/50 text-xs font-medium text-gray-300 hover:text-white hover:border-brand-500/50 transition flex items-center space-x-1.5">
+                        <i class="fa-regular fa-lightbulb text-yellow-400"></i>
+                        <span class="hidden sm:inline">Visual Hint</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Viewport Canvas Container -->
+            <div id="canvas-container" class="w-full h-full relative flex items-center justify-center">
+                <!-- 2D Canvas for 1D / 2D Modes -->
+                <canvas id="sim-canvas" class="w-full h-full block cursor-crosshair"></canvas>
+                
+                <!-- 3D Viewport Container for Three.js -->
+                <div id="three-viewport" class="w-full h-full absolute inset-0 hidden"></div>
+
+                <!-- Fermi Estimation Container (Dynamic HTML) -->
+                <div id="fermi-viewport" class="w-full h-full absolute inset-0 p-6 hidden overflow-y-auto flex flex-col items-center justify-center">
+                    <!-- Dynamic Content Inserted Here -->
+                </div>
+            </div>
+
+            <!-- Visual Hint Overlay Window -->
+            <div id="hint-overlay" class="hidden absolute bottom-20 left-4 right-4 md:left-6 md:w-96 glass-panel p-4 rounded-xl border border-yellow-500/30 z-20 text-xs text-gray-300 space-y-2">
+                <div class="flex justify-between items-center text-yellow-400 font-semibold">
+                    <span><i class="fa-solid fa-lightbulb mr-1"></i> Hint Assist</span>
+                    <button onclick="toggleHint()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <p id="hint-text">Compare the reference unit item against the target length. Try visualizing key subdivisions like 1/2 or 1/4 marks!</p>
+            </div>
+        </section>
+
+        <!-- Right Control Panel & Estimation Inputs -->
+        <aside class="w-full md:w-80 lg:w-96 border-t md:border-t-0 md:border-l border-gray-800/80 glass-panel flex flex-col shrink-0 z-10">
+            <div class="p-4 border-b border-gray-800/80 flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Input & Validation</span>
+                <span id="unit-indicator" class="text-xs px-2 py-0.5 rounded bg-slate-800 text-brand-300 border border-gray-700">Units: Segment</span>
+            </div>
+
+            <div class="p-6 flex-1 flex flex-col justify-between space-y-6 overflow-y-auto">
+                <!-- Unit Reference Specifier -->
+                <div class="glass-card p-4 rounded-xl border border-gray-800 space-y-3">
+                    <div class="flex items-center justify-between text-xs text-gray-400">
+                        <span>Unit Sample Size</span>
+                        <span id="sample-shape-name" class="text-gray-200 font-semibold">1 Unit Line</span>
+                    </div>
+                    <div id="unit-preview-box" class="h-16 bg-slate-900/80 rounded-lg border border-gray-800/80 flex items-center justify-center relative overflow-hidden">
+                        <!-- Canvas or Mini Visual for Reference -->
+                        <div id="unit-sample-graphic" class="flex items-center justify-center"></div>
+                    </div>
+                </div>
+
+                <!-- User Estimation Input Area -->
+                <div class="space-y-4">
+                    <div class="flex justify-between items-baseline">
+                        <label class="text-sm font-medium text-gray-300">Your Estimate</label>
+                        <span id="estimate-display-val" class="mono text-2xl font-extrabold text-brand-400">10</span>
+                    </div>
+
+                    <!-- Slider Control -->
+                    <input type="range" id="estimate-slider" min="1" max="100" value="10" class="w-full accent-brand-500 cursor-pointer">
+
+                    <!-- Direct Number Input & Quick Buttons -->
+                    <div class="flex space-x-2">
+                        <input type="number" id="estimate-number-input" value="10" min="1" max="500" class="flex-1 glass-input px-3 py-2 rounded-xl text-center mono text-lg font-bold text-white outline-none">
+                        <button onclick="adjustEstimate(-1)" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-gray-700 flex items-center justify-center text-gray-300 hover:text-white font-bold transition">-</button>
+                        <button onclick="adjustEstimate(1)" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-gray-700 flex items-center justify-center text-gray-300 hover:text-white font-bold transition">+</button>
+                    </div>
+
+                    <!-- Granularity Presets -->
+                    <div class="grid grid-cols-4 gap-2 pt-1">
+                        <button onclick="setEstimatePreset(5)" class="py-1 rounded bg-slate-900 hover:bg-slate-800 text-xs text-gray-400 hover:text-white border border-gray-800 font-mono">5</button>
+                        <button onclick="setEstimatePreset(10)" class="py-1 rounded bg-slate-900 hover:bg-slate-800 text-xs text-gray-400 hover:text-white border border-gray-800 font-mono">10</button>
+                        <button onclick="setEstimatePreset(25)" class="py-1 rounded bg-slate-900 hover:bg-slate-800 text-xs text-gray-400 hover:text-white border border-gray-800 font-mono">25</button>
+                        <button onclick="setEstimatePreset(50)" class="py-1 rounded bg-slate-900 hover:bg-slate-800 text-xs text-gray-400 hover:text-white border border-gray-800 font-mono">50</button>
+                    </div>
+                </div>
+
+                <!-- Evaluation & Result Box -->
+                <div id="result-feedback-card" class="hidden glass-card p-4 rounded-xl border border-gray-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-gray-400">Evaluation Result</span>
+                        <span id="feedback-badge" class="px-2 py-0.5 rounded text-xs font-bold uppercase">Great!</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-2 text-center py-2 bg-slate-950/40 rounded-lg border border-gray-800">
+                        <div>
+                            <div class="text-[10px] text-gray-400">Actual</div>
+                            <div id="val-actual" class="mono font-bold text-gray-200">12</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] text-gray-400">Estimate</div>
+                            <div id="val-estimated" class="mono font-bold text-brand-400">10</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] text-gray-400">Precision</div>
+                            <div id="val-accuracy" class="mono font-bold text-neon-emerald">83%</div>
+                        </div>
+                    </div>
+
+                    <p id="feedback-explanation" class="text-xs text-gray-300 italic text-center">Your estimate was within 17% of the exact calculation.</p>
+                </div>
+
+                <!-- Action Button Cluster -->
+                <div class="space-y-3">
+                    <button id="btn-check" onclick="checkEstimate()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white font-bold shadow-lg shadow-brand-600/30 hover:shadow-brand-500/50 transition duration-200 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-check-double"></i>
+                        <span>Check Estimate</span>
+                    </button>
+
+                    <button id="btn-next" onclick="nextLevel()" class="hidden w-full py-3.5 rounded-xl bg-gradient-to-r from-neon-emerald to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold shadow-lg shadow-emerald-500/30 transition duration-200 flex items-center justify-center space-x-2">
+                        <span>Next Challenge</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+
+                    <button onclick="resetCurrentChallenge()" class="w-full py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-medium text-gray-400 hover:text-gray-200 border border-gray-800 transition flex items-center justify-center space-x-1.5">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>New Random Challenge</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Analytics Dashboard Modal -->
+    <div id="modal-analytics" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-2xl rounded-2xl border border-gray-800 overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-5 border-b border-gray-800 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-chart-line text-brand-400"></i>
+                    <h3 class="font-bold text-gray-100">Performance Analytics & History</h3>
+                </div>
+                <button onclick="toggleAnalyticsModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <div class="p-6 space-y-6 overflow-y-auto">
+                <!-- Accuracy History Chart -->
+                <div class="glass-card p-4 rounded-xl border border-gray-800">
+                    <h4 class="text-xs font-semibold text-gray-400 mb-3">Estimation Accuracy Progress (%)</h4>
+                    <div class="h-48">
+                        <canvas id="accuracyChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Detailed Breakdown -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                    <div class="glass-card p-3 rounded-xl">
+                        <div class="text-[10px] text-gray-400 uppercase">Total Rounds</div>
+                        <div id="modal-stat-rounds" class="mono text-xl font-bold text-gray-200">0</div>
+                    </div>
+                    <div class="glass-card p-3 rounded-xl">
+                        <div class="text-[10px] text-gray-400 uppercase">Best Precision</div>
+                        <div id="modal-stat-best" class="mono text-xl font-bold text-neon-emerald">0%</div>
+                    </div>
+                    <div class="glass-card p-3 rounded-xl">
+                        <div class="text-[10px] text-gray-400 uppercase">Bullseyes (Exact)</div>
+                        <div id="modal-stat-bullseyes" class="mono text-xl font-bold text-neon-cyan">0</div>
+                    </div>
+                    <div class="glass-card p-3 rounded-xl">
+                        <div class="text-[10px] text-gray-400 uppercase">Avg Error Rate</div>
+                        <div id="modal-stat-error" class="mono text-xl font-bold text-neon-amber">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="modal-settings" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md rounded-2xl border border-gray-800 overflow-hidden flex flex-col">
+            <div class="p-5 border-b border-gray-800 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-sliders text-brand-400"></i>
+                    <h3 class="font-bold text-gray-100">Lab Settings & Difficulty</h3>
+                </div>
+                <button onclick="toggleSettingsModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <div class="p-6 space-y-5">
+                <!-- Difficulty Setting -->
+                <div class="space-y-2">
+                    <label class="text-xs font-semibold text-gray-300">Difficulty Scale</label>
+                    <select id="setting-difficulty" class="w-full glass-input px-3 py-2 rounded-xl text-sm text-gray-200 outline-none">
+                        <option value="easy">Easy (Smaller Quantities, Simple Shapes)</option>
+                        <option value="medium" selected>Medium (Standard Range)</option>
+                        <option value="hard">Hard (Large Quantities, Irregular Shapes)</option>
+                    </select>
+                </div>
+
+                <!-- Tolerance Margin -->
+                <div class="space-y-2">
+                    <div class="flex justify-between text-xs">
+                        <span class="font-semibold text-gray-300">Tolerance Margin for 'Success'</span>
+                        <span id="tolerance-val" class="mono text-brand-400 font-bold">15%</span>
+                    </div>
+                    <input type="range" id="setting-tolerance" min="5" max="30" value="15" class="w-full">
+                </div>
+
+                <!-- Timer Toggle -->
+                <div class="flex items-center justify-between pt-2 border-t border-gray-800">
+                    <div>
+                        <div class="text-sm font-semibold text-gray-200">Timed Trial Mode</div>
+                        <div class="text-xs text-gray-400">Adds a 30s countdown to each attempt</div>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="setting-timer" class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic & Physics Engine -->
+    <script>
+        /* Global Application State */
+        const state = {
+            mode: '1d', // '1d', '2d', '3d', 'fermi'
+            score: 0,
+            streak: 0,
+            level: 1,
+            history: [],
+            
+            // Settings
+            difficulty: 'medium',
+            tolerance: 0.15,
+            timerEnabled: false,
+            timerSeconds: 30,
+            timerInterval: null,
+
+            // Active Challenge State
+            targetValue: 0,
+            userEstimate: 10,
+            isChecked: false,
+            unitType: 'segment', // 'segment', 'square', 'circle', 'cube', 'sphere'
+
+            // Mode 1D specifics
+            lineTargetLength: 0,
+            lineUnitLength: 0,
+
+            // Mode 2D specifics
+            shapeType: 'rectangle',
+            gridWidth: 0,
+            gridHeight: 0,
+
+            // Mode 3D specifics
+            container3DType: 'box',
+            containerDim: { w: 0, h: 0, d: 0 },
+
+            // Mode Fermi specifics
+            fermiIndex: 0,
+            fermiValues: {}
+        };
+
+        // Canvas & 3D Render Instances
+        let canvas, ctx;
+        let scene, camera, renderer, orbitControls, containerGroup, objectsGroup;
+        let chartInstance = null;
+
+        // Fermi Problems Database
+        const fermiProblems = [
+            {
+                title: "Ping Pong Balls in a Bus",
+                question: "Estimate how many standard ping-pong balls (40mm diameter) would completely fill a standard school bus.",
+                steps: [
+                    { id: 'bus_vol', label: 'School Bus Volume (m³)', min: 10, max: 100, default: 40, unit: 'm³' },
+                    { id: 'ball_vol', label: 'Ping-Pong Ball Volume (cm³)', min: 10, max: 100, default: 33, unit: 'cm³' },
+                    { id: 'packing', label: 'Sphere Packing Efficiency', min: 0.4, max: 0.8, default: 0.64, unit: 'ratio' }
+                ],
+                calculate: (s) => Math.round((s.bus_vol * 1000000 / s.ball_vol) * s.packing),
+                hint: "A bus is roughly 10m long, 2.5m wide, and 2m tall. Spheres leave small gaps when packed (~64% efficiency)."
+            },
+            {
+                title: "Water Drops in an Olympic Swimming Pool",
+                question: "Estimate how many individual drops of water make up a full Olympic-sized swimming pool.",
+                steps: [
+                    { id: 'pool_vol', label: 'Pool Volume (Liters)', min: 1000000, max: 5000000, default: 2500000, unit: 'L' },
+                    { id: 'drop_vol', label: 'Volume per Drop (mL)', min: 0.01, max: 0.1, default: 0.05, unit: 'mL' }
+                ],
+                calculate: (s) => Math.round((s.pool_vol * 1000) / s.drop_vol),
+                hint: "An Olympic pool holds 2.5 million liters of water. 1 mL contains roughly 20 standard water drops."
+            },
+            {
+                title: "Heartbeats in a Human Lifetime",
+                question: "Estimate how many times an average human heart beats over an entire lifetime of 80 years.",
+                steps: [
+                    { id: 'bpm', label: 'Average Heart Rate (BPM)', min: 50, max: 100, default: 70, unit: 'bpm' },
+                    { id: 'years', label: 'Lifespan (Years)', min: 60, max: 100, default: 80, unit: 'years' }
+                ],
+                calculate: (s) => Math.round(s.bpm * 60 * 24 * 365.25 * s.years),
+                hint: "Calculate beats per minute -> hour -> day -> year -> lifetime!"
+            }
+        ];
+
+        /* Initial Setup */
+        window.onload = () => {
+            initCanvas();
+            initThreeJS();
+            initChart();
+            setupEventListeners();
+            switchMode('1d');
+        };
+
+        /* 2D Canvas Initialization */
+        function initCanvas() {
+            canvas = document.getElementById('sim-canvas');
+            ctx = canvas.getContext('2d');
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+        }
+
+        function resizeCanvas() {
+            const container = document.getElementById('canvas-container');
+            if (!container) return;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            if (state.mode === '1d' || state.mode === '2d') {
+                render();
+            }
+        }
+
+        /* Three.js Initialization */
+        function initThreeJS() {
+            const viewport = document.getElementById('three-viewport');
+            
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x090d16);
+
+            camera = new THREE.PerspectiveCamera(45, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
+            camera.position.set(12, 12, 18);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            viewport.appendChild(renderer.domElement);
+
+            orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
+            orbitControls.enableDamping = true;
+            orbitControls.dampingFactor = 0.05;
+
+            // Lighting Setup
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0x6366f1, 0.8);
+            dirLight.position.set(15, 20, 15);
+            dirLight.castShadow = true;
+            scene.add(dirLight);
+
+            const pointLight = new THREE.PointLight(0x06b6d4, 0.6);
+            pointLight.position.set(-10, -10, -10);
+            scene.add(pointLight);
+
+            containerGroup = new THREE.Group();
+            objectsGroup = new THREE.Group();
+            scene.add(containerGroup);
+            scene.add(objectsGroup);
+
+            // Animation Loop
+            function animate3D() {
+                requestAnimationFrame(animate3D);
+                if (state.mode === '3d') {
+                    orbitControls.update();
+                    renderer.render(scene, camera);
+                }
+            }
+            animate3D();
+        }
+
+        /* Mode Switcher */
+        function switchMode(newMode) {
+            state.mode = newMode;
+
+            // Update Tab Active UI
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('bg-brand-600', 'text-white', 'shadow-lg');
+                tab.classList.add('text-gray-400');
+            });
+            const activeTab = document.getElementById(`tab-${newMode}`);
+            if (activeTab) {
+                activeTab.classList.add('bg-brand-600', 'text-white', 'shadow-lg');
+                activeTab.classList.remove('text-gray-400');
+            }
+
+            // Hide/Show Viewports
+            const canvasEl = document.getElementById('sim-canvas');
+            const threeEl = document.getElementById('three-viewport');
+            const fermiEl = document.getElementById('fermi-viewport');
+
+            canvasEl.classList.add('hidden');
+            threeEl.classList.add('hidden');
+            fermiEl.classList.add('hidden');
+
+            const hudTitle = document.getElementById('hud-title');
+            const unitIndicator = document.getElementById('unit-indicator');
+
+            if (newMode === '1d') {
+                canvasEl.classList.remove('hidden');
+                hudTitle.innerText = "1D Segment Length Estimation";
+                unitIndicator.innerText = "Units: Line Segment";
+            } else if (newMode === '2d') {
+                canvasEl.classList.remove('hidden');
+                hudTitle.innerText = "2D Area Coverage Estimation";
+                unitIndicator.innerText = "Units: Square Grid";
+            } else if (newMode === '3d') {
+                threeEl.classList.remove('hidden');
+                hudTitle.innerText = "3D Volume Packing Estimation";
+                unitIndicator.innerText = "Units: 3D Cubes";
+                onThreeWindowResize();
+            } else if (newMode === 'fermi') {
+                fermiEl.classList.remove('hidden');
+                hudTitle.innerText = "Fermi Order-of-Magnitude Challenge";
+                unitIndicator.innerText = "Units: Calculated Formula";
+                renderFermiMode();
+            }
+
+            resetCurrentChallenge();
+        }
+
+        /* Challenge Generator */
+        function resetCurrentChallenge() {
+            state.isChecked = false;
+            document.getElementById('result-feedback-card').classList.add('hidden');
+            document.getElementById('btn-check').classList.remove('hidden');
+            document.getElementById('btn-next').classList.add('hidden');
+
+            // Set up difficulty multipliers
+            let minRange = 5, maxRange = 35;
+            if (state.difficulty === 'easy') { minRange = 4; maxRange = 15; }
+            if (state.difficulty === 'hard') { minRange = 25; maxRange = 80; }
+
+            state.targetValue = Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
+            
+            // Slider range update
+            const slider = document.getElementById('estimate-slider');
+            const numInput = document.getElementById('estimate-number-input');
+            slider.max = Math.max(100, state.targetValue * 2);
+            slider.value = Math.round(state.targetValue * 0.7);
+            numInput.value = slider.value;
+            state.userEstimate = parseInt(slider.value);
+            updateEstimateDisplay();
+
+            if (state.mode === '1d') {
+                generate1DChallenge();
+            } else if (state.mode === '2d') {
+                generate2DChallenge();
+            } else if (state.mode === '3d') {
+                generate3DChallenge();
+            } else if (state.mode === 'fermi') {
+                generateFermiChallenge();
+            }
+
+            if (state.timerEnabled) startTimer();
+            renderUnitPreview();
+            render();
+        }
+
+        /* Mode 1D Engine */
+        function generate1DChallenge() {
+            const margin = 100;
+            const availableWidth = canvas.width - margin * 2;
+            state.lineUnitLength = Math.max(15, Math.floor(availableWidth / (state.targetValue + 5)));
+            state.lineTargetLength = state.lineUnitLength * state.targetValue;
+            document.getElementById('hint-text').innerText = `Visual Hint: Divide the overall length mentally into halves or quarters to gauge units!`;
+        }
+
+        /* Mode 2D Engine */
+        function generate2DChallenge() {
+            // Find grid dimensions fitting targetValue
+            let cols = Math.ceil(Math.sqrt(state.targetValue));
+            let rows = Math.ceil(state.targetValue / cols);
+            state.gridWidth = cols;
+            state.gridHeight = rows;
+            state.targetValue = cols * rows; // keep neat rectangular grid for accuracy
+            document.getElementById('hint-text').innerText = `Visual Hint: Count the units along one edge and multiply (Width × Height).`;
+        }
+
+        /* Mode 3D Engine */
+        function generate3DChallenge() {
+            // Rebuild 3D Scene
+            while(containerGroup.children.length > 0) containerGroup.remove(containerGroup.children[0]);
+            while(objectsGroup.children.length > 0) objectsGroup.remove(objectsGroup.children[0]);
+
+            let w = Math.ceil(Math.cbrt(state.targetValue));
+            let h = Math.ceil(Math.sqrt(state.targetValue / w));
+            let d = Math.ceil(state.targetValue / (w * h));
+            state.targetValue = w * h * d;
+            state.containerDim = { w, h, d };
+
+            // Wireframe Container Box
+            const boxGeo = new THREE.BoxGeometry(w * 1.05, h * 1.05, d * 1.05);
+            const wireGeo = new THREE.WireframeGeometry(boxGeo);
+            const line = new THREE.LineSegments(wireGeo, new THREE.LineBasicMaterial({ color: 0x6366f1, linewidth: 2 }));
+            containerGroup.add(line);
+
+            // Container Translucent Fill
+            const mat = new THREE.MeshPhongMaterial({ color: 0x4f46e5, transparent: true, opacity: 0.15, side: THREE.DoubleSide });
+            const mesh = new THREE.Mesh(boxGeo, mat);
+            containerGroup.add(mesh);
+
+            document.getElementById('hint-text').innerText = `Visual Hint: Estimate base area (Width × Depth) and multiply by height layers!`;
+        }
+
+        /* Reveal 3D Packed Cubes on Check */
+        function reveal3DPacking() {
+            while(objectsGroup.children.length > 0) objectsGroup.remove(objectsGroup.children[0]);
+            const { w, h, d } = state.containerDim;
+            const cubeGeo = new THREE.BoxGeometry(0.9, 0.9, 0.9);
+            const cubeMat = new THREE.MeshStandardMaterial({ color: 0x06b6d4, roughness: 0.3, metalness: 0.2 });
+
+            const startX = -w / 2 + 0.5;
+            const startY = -h / 2 + 0.5;
+            const startZ = -d / 2 + 0.5;
+
+            let count = 0;
+            for (let x = 0; x < w; x++) {
+                for (let y = 0; y < h; y++) {
+                    for (let z = 0; z < d; z++) {
+                        const cube = new THREE.Mesh(cubeGeo, cubeMat);
+                        cube.position.set(startX + x, startY + y, startZ + z);
+                        cube.scale.set(0.01, 0.01, 0.01);
+                        objectsGroup.add(cube);
+
+                        // Pop-in Animation
+                        setTimeout(() => {
+                            let s = 0.01;
+                            const anim = setInterval(() => {
+                                s += 0.2;
+                                if (s >= 1) { cube.scale.set(1, 1, 1); clearInterval(anim); }
+                                else cube.scale.set(s, s, s);
+                            }, 16);
+                        }, count * 15);
+                        count++;
+                    }
+                }
+            }
+        }
+
+        /* Fermi Challenge Generator */
+        function generateFermiChallenge() {
+            state.fermiIndex = Math.floor(Math.random() * fermiProblems.length);
+            renderFermiMode();
+        }
+
+        function renderFermiMode() {
+            const problem = fermiProblems[state.fermiIndex];
+            const fermiEl = document.getElementById('fermi-viewport');
+            
+            // Populate initial state values
+            state.fermiValues = {};
+            problem.steps.forEach(step => {
+                state.fermiValues[step.id] = step.default;
+            });
+
+            state.targetValue = problem.calculate(state.fermiValues);
+            document.getElementById('hint-text').innerText = problem.hint;
+
+            let html = `
+                <div class="max-w-xl w-full glass-panel p-6 rounded-2xl border border-gray-800 space-y-6">
+                    <div>
+                        <span class="text-xs font-bold text-neon-purple uppercase tracking-wider">Fermi Problem #${state.fermiIndex + 1}</span>
+                        <h3 class="text-xl font-bold text-white mt-1">${problem.title}</h3>
+                        <p class="text-sm text-gray-300 mt-2">${problem.question}</p>
+                    </div>
+
+                    <div class="space-y-4 pt-2 border-t border-gray-800">
+            `;
+
+            problem.steps.forEach(step => {
+                html += `
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-400 font-medium">${step.label}</span>
+                            <span id="fermi-val-${step.id}" class="mono font-bold text-neon-cyan">${step.default} ${step.unit}</span>
+                        </div>
+                        <input type="range" min="${step.min}" max="${step.max}" step="${(step.max - step.min) / 100}" value="${step.default}" 
+                            oninput="updateFermiStep('${step.id}', this.value, '${step.unit}')" class="w-full">
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-900/80 border border-gray-800 text-center">
+                        <div class="text-xs text-gray-400">Calculated Model Estimate</div>
+                        <div id="fermi-total-calc" class="mono text-2xl font-extrabold text-brand-400 mt-1">${state.targetValue.toLocaleString()}</div>
+                    </div>
+                </div>
+            `;
+
+            fermiEl.innerHTML = html;
+        }
+
+        function updateFermiStep(id, val, unit) {
+            state.fermiValues[id] = parseFloat(val);
+            document.getElementById(`fermi-val-${id}`).innerText = `${parseFloat(val).toLocaleString()} ${unit}`;
+            
+            const problem = fermiProblems[state.fermiIndex];
+            state.targetValue = problem.calculate(state.fermiValues);
+            document.getElementById('fermi-total-calc').innerText = state.targetValue.toLocaleString();
+        }
+
+        /* Render 2D Canvas Loop */
+        function render() {
+            if (state.mode === '3d' || state.mode === 'fermi') return;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (state.mode === '1d') {
+                render1DCanvas();
+            } else if (state.mode === '2d') {
+                render2DCanvas();
+            }
+        }
+
+        function render1DCanvas() {
+            const startX = (canvas.width - state.lineTargetLength) / 2;
+            const startY = canvas.height / 2;
+
+            // Target Segment Bar Background
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = 'rgba(99, 102, 241, 0.4)';
+            ctx.strokeStyle = '#6366f1';
+            ctx.lineWidth = 8;
+            ctx.lineCap = 'round';
+
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(startX + state.lineTargetLength, startY);
+            ctx.stroke();
+
+            // End Cap Markers
+            ctx.shadowBlur = 0;
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 3;
+            
+            ctx.beginPath();
+            ctx.moveTo(startX, startY - 15);
+            ctx.lineTo(startX, startY + 15);
+            ctx.moveTo(startX + state.lineTargetLength, startY - 15);
+            ctx.lineTo(startX + state.lineTargetLength, startY + 15);
+            ctx.stroke();
+
+            // Reveal Animation on Check
+            if (state.isChecked) {
+                const unitLen = state.lineUnitLength;
+                for (let i = 0; i <= state.targetValue; i++) {
+                    const x = startX + i * unitLen;
+                    ctx.strokeStyle = '#06b6d4';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(x, startY - 10);
+                    ctx.lineTo(x, startY + 10);
+                    ctx.stroke();
+
+                    if (i < state.targetValue) {
+                        ctx.fillStyle = i % 2 === 0 ? 'rgba(6, 182, 212, 0.2)' : 'rgba(16, 185, 129, 0.2)';
+                        ctx.fillRect(x, startY - 4, unitLen, 8);
+                    }
+                }
+            }
+        }
+
+        function render2DCanvas() {
+            const tileSize = Math.min(
+                (canvas.width * 0.6) / state.gridWidth,
+                (canvas.height * 0.6) / state.gridHeight
+            );
+            const totalW = state.gridWidth * tileSize;
+            const totalH = state.gridHeight * tileSize;
+            const startX = (canvas.width - totalW) / 2;
+            const startY = (canvas.height - totalH) / 2;
+
+            // Target Outer Bounding Area
+            ctx.fillStyle = 'rgba(31, 41, 55, 0.6)';
+            ctx.strokeStyle = '#6366f1';
+            ctx.lineWidth = 3;
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = 'rgba(99, 102, 241, 0.3)';
+
+            ctx.fillRect(startX, startY, totalW, totalH);
+            ctx.strokeRect(startX, startY, totalW, totalH);
+            ctx.shadowBlur = 0;
+
+            // If Checked, Fill Tile Matrix
+            if (state.isChecked) {
+                for (let r = 0; r < state.gridHeight; r++) {
+                    for (let c = 0; c < state.gridWidth; c++) {
+                        const x = startX + c * tileSize;
+                        const y = startY + r * tileSize;
+
+                        ctx.fillStyle = (r + c) % 2 === 0 ? 'rgba(6, 182, 212, 0.4)' : 'rgba(99, 102, 241, 0.4)';
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                        ctx.lineWidth = 1;
+
+                        ctx.fillRect(x + 2, y + 2, tileSize - 4, tileSize - 4);
+                        ctx.strokeRect(x + 2, y + 2, tileSize - 4, tileSize - 4);
+                    }
+                }
+            }
+        }
+
+        /* Unit Specifier Preview Rendering */
+        function renderUnitPreview() {
+            const box = document.getElementById('unit-sample-graphic');
+            const shapeName = document.getElementById('sample-shape-name');
+
+            if (state.mode === '1d') {
+                shapeName.innerText = "1 Unit Length";
+                box.innerHTML = `<div class="w-12 h-1 bg-neon-cyan rounded-full shadow-lg shadow-neon-cyan/50"></div>`;
+            } else if (state.mode === '2d') {
+                shapeName.innerText = "1 Unit Tile Area";
+                box.innerHTML = `<div class="w-8 h-8 rounded bg-brand-500/30 border-2 border-brand-400 shadow-md"></div>`;
+            } else if (state.mode === '3d') {
+                shapeName.innerText = "1 Unit 3D Cube";
+                box.innerHTML = `<div class="w-8 h-8 rounded bg-neon-amber/30 border-2 border-neon-amber flex items-center justify-center text-xs text-neon-amber font-bold shadow-md"><i class="fa-solid fa-cube"></i></div>`;
+            } else if (state.mode === 'fermi') {
+                shapeName.innerText = "Order of Magnitude";
+                box.innerHTML = `<div class="mono text-xs font-bold text-neon-purple">10<sup>X</sup> Factor</div>`;
+            }
+        }
+
+        /* Slider & Number Input Syncing */
+        function setupEventListeners() {
+            const slider = document.getElementById('estimate-slider');
+            const input = document.getElementById('estimate-number-input');
+
+            slider.addEventListener('input', (e) => {
+                input.value = e.target.value;
+                state.userEstimate = parseInt(e.target.value);
+                updateEstimateDisplay();
+            });
+
+            input.addEventListener('change', (e) => {
+                let val = Math.max(1, parseInt(e.target.value) || 1);
+                input.value = val;
+                slider.value = val;
+                state.userEstimate = val;
+                updateEstimateDisplay();
+            });
+        }
+
+        function adjustEstimate(delta) {
+            const input = document.getElementById('estimate-number-input');
+            const slider = document.getElementById('estimate-slider');
+            let val = Math.max(1, (parseInt(input.value) || 0) + delta);
+            input.value = val;
+            slider.value = val;
+            state.userEstimate = val;
+            updateEstimateDisplay();
+        }
+
+        function setEstimatePreset(val) {
+            const input = document.getElementById('estimate-number-input');
+            const slider = document.getElementById('estimate-slider');
+            input.value = val;
+            slider.value = val;
+            state.userEstimate = val;
+            updateEstimateDisplay();
+        }
+
+        function updateEstimateDisplay() {
+            document.getElementById('estimate-display-val').innerText = state.userEstimate.toLocaleString();
+        }
+
+        /* Check Estimate Logic */
+        function checkEstimate() {
+            state.isChecked = true;
+            stopTimer();
+
+            const actual = state.targetValue;
+            const estimate = state.userEstimate;
+            const diff = Math.abs(actual - estimate);
+            const errorRate = diff / actual;
+            const accuracy = Math.max(0, Math.round((1 - errorRate) * 100));
+
+            // Feedback Card UI
+            const feedbackCard = document.getElementById('result-feedback-card');
+            const badge = document.getElementById('feedback-badge');
+            const actualEl = document.getElementById('val-actual');
+            const estimatedEl = document.getElementById('val-estimated');
+            const accuracyEl = document.getElementById('val-accuracy');
+            const explanation = document.getElementById('feedback-explanation');
+
+            actualEl.innerText = actual.toLocaleString();
+            estimatedEl.innerText = estimate.toLocaleString();
+            accuracyEl.innerText = `${accuracy}%`;
+
+            if (errorRate <= state.tolerance) {
+                badge.className = "px-2 py-0.5 rounded text-xs font-bold uppercase bg-emerald-500/20 text-neon-emerald border border-emerald-500/30";
+                badge.innerText = "Bullseye! 🎯";
+                explanation.innerText = `Awesome job! Your estimate was within the target tolerance.`;
+                state.score += 100 + accuracy;
+                state.streak += 1;
+            } else if (errorRate <= state.tolerance * 2) {
+                badge.className = "px-2 py-0.5 rounded text-xs font-bold uppercase bg-amber-500/20 text-neon-amber border border-amber-500/30";
+                badge.innerText = "Close!";
+                explanation.innerText = `Good effort! Your estimate was off by ${Math.round(errorRate * 100)}%.`;
+                state.score += 30;
+                state.streak = 0;
+            } else {
+                badge.className = "px-2 py-0.5 rounded text-xs font-bold uppercase bg-rose-500/20 text-neon-rose border border-rose-500/30";
+                badge.innerText = "Needs Calibration";
+                explanation.innerText = `Off target. Keep practicing your subdivision techniques!`;
+                state.streak = 0;
+            }
+
+            // Record History Stats
+            state.history.push({ mode: state.mode, actual, estimate, accuracy });
+            updateHUDStats();
+            updateChart();
+
+            feedbackCard.classList.remove('hidden');
+            document.getElementById('btn-check').classList.add('hidden');
+            document.getElementById('btn-next').classList.remove('hidden');
+
+            // Trigger visual reveal animations
+            if (state.mode === '1d' || state.mode === '2d') render();
+            if (state.mode === '3d') reveal3DPacking();
+        }
+
+        function nextLevel() {
+            state.level++;
+            document.getElementById('hud-level-badge').innerText = `Level ${state.level}`;
+            resetCurrentChallenge();
+        }
+
+        /* HUD & Stats Updates */
+        function updateHUDStats() {
+            document.getElementById('stat-score').innerText = state.score;
+            document.getElementById('stat-streak').innerText = `${state.streak} 🔥`;
+
+            if (state.history.length > 0) {
+                const avgAcc = Math.round(state.history.reduce((a, b) => a + b.accuracy, 0) / state.history.length);
+                document.getElementById('stat-accuracy').innerText = `${avgAcc}%`;
+            }
+        }
+
+        /* Timer Handler */
+        function startTimer() {
+            stopTimer();
+            state.timerSeconds = 30;
+            const timerBox = document.getElementById('timer-box');
+            const timerVal = document.getElementById('timer-val');
+            timerBox.classList.remove('hidden');
+            timerBox.classList.add('flex');
+            
+            timerVal.innerText = `00:${state.timerSeconds < 10 ? '0' : ''}${state.timerSeconds}`;
+
+            state.timerInterval = setInterval(() => {
+                state.timerSeconds--;
+                timerVal.innerText = `00:${state.timerSeconds < 10 ? '0' : ''}${state.timerSeconds}`;
+
+                if (state.timerSeconds <= 0) {
+                    stopTimer();
+                    checkEstimate();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            document.getElementById('timer-box').classList.add('hidden');
+        }
+
+        /* Visual Hint Toggle */
+        function toggleHint() {
+            const overlay = document.getElementById('hint-overlay');
+            overlay.classList.toggle('hidden');
+        }
+
+        /* Settings Modal Controls */
+        function toggleSettingsModal() {
+            const modal = document.getElementById('modal-settings');
+            modal.classList.toggle('hidden');
+
+            // Bind values
+            document.getElementById('setting-difficulty').value = state.difficulty;
+            document.getElementById('setting-tolerance').value = state.tolerance * 100;
+            document.getElementById('tolerance-val').innerText = `${state.tolerance * 100}%`;
+            document.getElementById('setting-timer').checked = state.timerEnabled;
+
+            // Change listeners
+            document.getElementById('setting-difficulty').onchange = (e) => { state.difficulty = e.target.value; resetCurrentChallenge(); };
+            document.getElementById('setting-tolerance').oninput = (e) => {
+                state.tolerance = parseInt(e.target.value) / 100;
+                document.getElementById('tolerance-val').innerText = `${e.target.value}%`;
+            };
+            document.getElementById('setting-timer').onchange = (e) => { state.timerEnabled = e.target.checked; };
+        }
+
+        /* Analytics Modal Controls */
+        function toggleAnalyticsModal() {
+            const modal = document.getElementById('modal-analytics');
+            modal.classList.toggle('hidden');
+            
+            if (!modal.classList.contains('hidden')) {
+                // Refresh modal stats
+                document.getElementById('modal-stat-rounds').innerText = state.history.length;
+                
+                if (state.history.length > 0) {
+                    const best = Math.max(...state.history.map(h => h.accuracy));
+                    const bullseyes = state.history.filter(h => h.accuracy >= 95).length;
+                    const avgError = Math.round(100 - (state.history.reduce((a, b) => a + b.accuracy, 0) / state.history.length));
+
+                    document.getElementById('modal-stat-best').innerText = `${best}%`;
+                    document.getElementById('modal-stat-bullseyes').innerText = bullseyes;
+                    document.getElementById('modal-stat-error').innerText = `${avgError}%`;
+                }
+            }
+        }
+
+        /* Chart.js Setup */
+        function initChart() {
+            const ctx = document.getElementById('accuracyChart').getContext('2d');
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Accuracy %',
+                        data: [],
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 2,
+                        pointBackgroundColor: '#06b6d4'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { min: 0, max: 100, ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                        x: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function updateChart() {
+            if (!chartInstance) return;
+            chartInstance.data.labels = state.history.map((_, i) => `#${i + 1}`);
+            chartInstance.data.datasets[0].data = state.history.map(h => h.accuracy);
+            chartInstance.update();
+        }
+
+        /* Resize Helper for Three.js */
+        function onThreeWindowResize() {
+            const viewport = document.getElementById('three-viewport');
+            if (!viewport || !camera || !renderer) return;
+            camera.aspect = viewport.clientWidth / viewport.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+        }
+        window.addEventListener('resize', onThreeWindowResize);
+    </script>
+</body>
+</html>
