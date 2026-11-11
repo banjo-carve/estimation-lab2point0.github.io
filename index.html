@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Estimation Science & Math Lab Pro v4.0</title>
+  <title>Estimation Science & Math Lab Pro v5.0</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Three.js CDN -->
+  <!-- Three.js & OrbitControls CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <!-- Lucide Icons CDN -->
@@ -28,32 +28,31 @@
   </script>
   <style>
     .glass-card {
-      background: rgba(17, 24, 39, 0.75);
-      backdrop-filter: blur(12px);
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
-    /* Hide scrollbar for clean UI */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 <body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col font-sans selection:bg-brand-500 selection:text-white">
 
-  <!-- TOP NAV BAR -->
-  <header class="sticky top-0 z-40 glass-card border-b border-gray-800/80 px-4 py-3 flex items-center justify-between">
+  <!-- TOP HEADER NAVBAR -->
+  <header class="sticky top-0 z-40 glass-card border-b border-gray-800 px-4 py-3 flex items-center justify-between shadow-xl">
     <div class="flex items-center space-x-3">
       <div class="p-2 bg-brand-600/30 text-brand-400 rounded-xl border border-brand-500/30">
         <i data-lucide="calculator" class="w-6 h-6"></i>
       </div>
       <div>
-        <h1 class="text-base font-bold bg-gradient-to-r from-brand-400 via-purple-400 to-accent-500 bg-clip-text">
-          Estimation Lab <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">v4.0</span>
+        <h1 class="text-base font-bold bg-gradient-to-r from-brand-400 via-purple-400 to-accent-500 bg-clip-text text-transparent">
+          Estimation Lab <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">v5.0 Pro</span>
         </h1>
-        <p class="text-xs text-gray-400 hidden sm:block">Advanced Physics, Math & Fermi Reasoning Engine</p>
+        <p class="text-xs text-gray-400 hidden sm:block">Advanced Procedural Physics, Math & Fermi Reasoning Engine</p>
       </div>
     </div>
 
-    <!-- STATS SUMMARY HEADER -->
+    <!-- PERSISTENT METRICS & TOOLS -->
     <div class="flex items-center space-x-2 sm:space-x-4 text-xs">
       <div class="glass-card px-3 py-1.5 rounded-lg flex items-center space-x-2 border border-gray-800">
         <i data-lucide="award" class="w-4 h-4 text-amber-400"></i>
@@ -71,27 +70,27 @@
     </div>
   </header>
 
-  <!-- MAIN TAB NAVIGATION (Desktop + Tablet) -->
-  <div class="bg-gray-900/90 border-b border-gray-800 overflow-x-auto no-scrollbar px-4 py-2 flex space-x-2">
-    <button onclick="switchTab('1d')" id="tab-btn-1d" class="tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap bg-brand-600 text-white shadow-lg shadow-brand-600/30">
+  <!-- DESKTOP TAB NAVIGATION BAR -->
+  <nav class="hidden md:flex bg-gray-900/90 border-b border-gray-800 px-4 py-2 space-x-2 overflow-x-auto no-scrollbar">
+    <button onclick="switchTab('1d')" id="tab-btn-1d" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap bg-brand-600 text-white shadow-lg shadow-brand-600/30">
       <i data-lucide="ruler" class="w-4 h-4"></i><span>1D Length</span>
     </button>
-    <button onclick="switchTab('2d')" id="tab-btn-2d" class="tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap text-gray-400 hover:text-white hover:bg-gray-800">
+    <button onclick="switchTab('2d')" id="tab-btn-2d" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap text-gray-400 hover:text-white hover:bg-gray-800">
       <i data-lucide="square" class="w-4 h-4"></i><span>2D Area</span>
     </button>
-    <button onclick="switchTab('3d')" id="tab-btn-3d" class="tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap text-gray-400 hover:text-white hover:bg-gray-800">
+    <button onclick="switchTab('3d')" id="tab-btn-3d" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap text-gray-400 hover:text-white hover:bg-gray-800">
       <i data-lucide="box" class="w-4 h-4"></i><span>3D Volume</span>
     </button>
-    <button onclick="switchTab('fermi')" id="tab-btn-fermi" class="tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap text-gray-400 hover:text-white hover:bg-gray-800">
-      <i data-lucide="brain" class="w-4 h-4"></i><span>Fermi Problems</span>
+    <button onclick="switchTab('fermi')" id="tab-btn-fermi" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap text-gray-400 hover:text-white hover:bg-gray-800">
+      <i data-lucide="brain" class="w-4 h-4"></i><span>Fermi Engine</span>
     </button>
-    <button onclick="switchTab('stat')" id="tab-btn-stat" class="tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap text-gray-400 hover:text-white hover:bg-gray-800">
+    <button onclick="switchTab('stat')" id="tab-btn-stat" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap text-gray-400 hover:text-white hover:bg-gray-800">
       <i data-lucide="line-chart" class="w-4 h-4"></i><span>Stats & CLT</span>
     </button>
-    <button onclick="switchTab('combo')" id="tab-btn-combo" class="tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap text-gray-400 hover:text-white hover:bg-gray-800">
-      <i data-lucide="git-fork" class="w-4 h-4"></i><span>Permutations & Counting</span>
+    <button onclick="switchTab('combo')" id="tab-btn-combo" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap text-gray-400 hover:text-white hover:bg-gray-800">
+      <i data-lucide="git-fork" class="w-4 h-4"></i><span>Combinatorics</span>
     </button>
-  </div>
+  </nav>
 
   <!-- MAIN VIEWPORT CONTAINER -->
   <main class="flex-1 p-3 sm:p-6 max-w-7xl w-full mx-auto pb-24 md:pb-8">
@@ -99,18 +98,18 @@
     <!-- ================= TAB 1: 1D LENGTH ================= -->
     <section id="tab-1d" class="tab-content block space-y-4">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 glass-card rounded-2xl p-4 sm:p-6 flex flex-col justify-between">
+        <div class="lg:col-span-2 glass-card rounded-2xl p-4 sm:p-6 flex flex-col justify-between shadow-2xl">
           <div>
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-lg font-bold flex items-center gap-2 text-brand-400">
-                <i data-lucide="ruler" class="w-5 h-5"></i> 1D Linear Scale Estimation
+                <i data-lucide="ruler" class="w-5 h-5"></i> Procedural 1D Linear Scale Estimation
               </h2>
-              <button onclick="reset1D()" class="px-3 py-1 bg-gray-800 hover:bg-gray-700 text-xs rounded-lg border border-gray-700 text-gray-300">
-                New Segment
+              <button onclick="generate1DChallenge()" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-xs rounded-lg border border-gray-700 text-gray-300 font-medium transition flex items-center gap-1">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> New Challenge
               </button>
             </div>
             <p id="desc-1d" class="text-sm text-gray-300 mb-4"></p>
-            <div class="relative w-full bg-gray-900 border border-gray-800 rounded-xl p-4 min-h-[220px] flex flex-col justify-center items-center">
+            <div class="relative w-full bg-gray-900 border border-gray-800 rounded-xl p-4 min-h-[220px] flex flex-col justify-center items-center shadow-inner">
               <canvas id="canvas-1d" class="w-full h-36 rounded-lg bg-gray-950/80"></canvas>
             </div>
           </div>
@@ -118,26 +117,26 @@
           <div class="mt-6 space-y-4">
             <div class="flex flex-col sm:flex-row gap-4 items-center">
               <label class="text-sm font-medium text-gray-300 whitespace-nowrap">Your Estimate:</label>
-              <input type="number" id="input-1d" min="1" step="0.1" placeholder="Enter count..." class="w-full sm:w-48 bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white font-mono focus:ring-2 focus:ring-brand-500 outline-none">
+              <input type="number" id="input-1d" min="0.1" step="any" placeholder="Enter count..." class="w-full sm:w-48 bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white font-mono focus:ring-2 focus:ring-brand-500 outline-none">
               <button onclick="submit1D()" class="w-full sm:w-auto px-6 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl transition shadow-lg shadow-brand-600/30">
-                Check 1D
+                Check Estimate
               </button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card rounded-2xl p-4 sm:p-6 flex flex-col justify-between space-y-4">
+        <div class="glass-card rounded-2xl p-4 sm:p-6 flex flex-col justify-between space-y-4 shadow-2xl">
           <div>
-            <h3 class="text-md font-bold mb-3 text-gray-200">Feedback & Precision</h3>
+            <h3 class="text-md font-bold mb-3 text-gray-200">Precision Feedback</h3>
             <div id="result-1d" class="p-4 rounded-xl bg-gray-900/60 border border-gray-800 text-sm text-gray-400 text-center">
-              Enter your estimated count of unit bars fitting into the target segment.
+              Estimate how many unit segments fit into the target baseline.
             </div>
           </div>
           <div>
-            <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Target Segment Info</h4>
-            <ul id="info-1d" class="text-xs space-y-2 text-gray-300 bg-gray-900/40 p-3 rounded-lg border border-gray-800">
-              <li>Target: <span class="font-mono text-white">--</span></li>
-              <li>Unit Segment: <span class="font-mono text-white">--</span></li>
+            <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Metrics</h4>
+            <ul id="info-1d" class="text-xs space-y-2 text-gray-300 bg-gray-900/40 p-3 rounded-lg border border-gray-800 font-mono">
+              <li>Target: <span class="text-white">--</span></li>
+              <li>Unit Segment: <span class="text-white">--</span></li>
             </ul>
           </div>
         </div>
@@ -147,18 +146,18 @@
     <!-- ================= TAB 2: 2D AREA ================= -->
     <section id="tab-2d" class="tab-content hidden space-y-4">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 glass-card rounded-2xl p-4 sm:p-6 flex flex-col justify-between">
+        <div class="lg:col-span-2 glass-card rounded-2xl p-4 sm:p-6 flex flex-col justify-between shadow-2xl">
           <div>
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-lg font-bold flex items-center gap-2 text-purple-400">
-                <i data-lucide="square" class="w-5 h-5"></i> 2D Area Tiling & Coverage
+                <i data-lucide="square" class="w-5 h-5"></i> Procedural 2D Area Tiling & Coverage
               </h2>
-              <button onclick="reset2D()" class="px-3 py-1 bg-gray-800 hover:bg-gray-700 text-xs rounded-lg border border-gray-700 text-gray-300">
-                New Shape
+              <button onclick="generate2DChallenge()" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-xs rounded-lg border border-gray-700 text-gray-300 font-medium transition flex items-center gap-1">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> New Shape
               </button>
             </div>
             <p id="desc-2d" class="text-sm text-gray-300 mb-4"></p>
-            <div class="relative w-full bg-gray-900 border border-gray-800 rounded-xl p-4 flex justify-center items-center">
+            <div class="relative w-full bg-gray-900 border border-gray-800 rounded-xl p-4 flex justify-center items-center shadow-inner">
               <canvas id="canvas-2d" width="600" height="300" class="w-full h-64 rounded-lg bg-gray-950/80"></canvas>
             </div>
           </div>
@@ -172,15 +171,15 @@
           </div>
         </div>
 
-        <div class="glass-card rounded-2xl p-4 sm:p-6 flex flex-col justify-between space-y-4">
+        <div class="glass-card rounded-2xl p-4 sm:p-6 flex flex-col justify-between space-y-4 shadow-2xl">
           <div>
             <h3 class="text-md font-bold mb-3 text-gray-200">2D Precision Score</h3>
             <div id="result-2d" class="p-4 rounded-xl bg-gray-900/60 border border-gray-800 text-sm text-gray-400 text-center">
-              Estimate how many unit tiles (squares or circles) fit inside the shaded polygon area.
+              Estimate total unit tiles covering the bounding shape.
             </div>
           </div>
           <div class="bg-gray-900/40 p-3 rounded-lg border border-gray-800 text-xs text-gray-400 space-y-1">
-            <p><strong class="text-gray-200">Tip:</strong> Break down irregular polygons into bounding rectangles then adjust for cutouts.</p>
+            <p><strong class="text-gray-200">Methodology:</strong> Multiply width and height dimensions and account for irregular boundaries.</p>
           </div>
         </div>
       </div>
@@ -189,20 +188,20 @@
     <!-- ================= TAB 3: 3D VOLUME ================= -->
     <section id="tab-3d" class="tab-content hidden space-y-4">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 glass-card rounded-2xl p-4 sm:p-6 flex flex-col justify-between">
+        <div class="lg:col-span-2 glass-card rounded-2xl p-4 sm:p-6 flex flex-col justify-between shadow-2xl">
           <div>
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-lg font-bold flex items-center gap-2 text-cyan-400">
-                <i data-lucide="box" class="w-5 h-5"></i> 3D Container & Sphere Packing
+                <i data-lucide="box" class="w-5 h-5"></i> Procedural 3D Volume & Packing
               </h2>
-              <button onclick="reset3D()" class="px-3 py-1 bg-gray-800 hover:bg-gray-700 text-xs rounded-lg border border-gray-700 text-gray-300">
-                New Container
+              <button onclick="generate3DChallenge()" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-xs rounded-lg border border-gray-700 text-gray-300 font-medium transition flex items-center gap-1">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> New Container
               </button>
             </div>
             <p id="desc-3d" class="text-sm text-gray-300 mb-3"></p>
-            <div id="viewport-3d" class="relative w-full h-72 bg-gray-950 rounded-xl border border-gray-800 overflow-hidden">
+            <div id="viewport-3d" class="relative w-full h-72 bg-gray-950 rounded-xl border border-gray-800 overflow-hidden shadow-inner">
               <div class="absolute top-2 left-2 text-[10px] bg-black/60 px-2 py-1 rounded text-gray-400 z-10 pointer-events-none">
-                Drag to rotate | Scroll to zoom
+                Orbit Controls: Drag to rotate | Scroll to zoom
               </div>
             </div>
           </div>
@@ -216,43 +215,43 @@
           </div>
         </div>
 
-        <div class="glass-card rounded-2xl p-4 sm:p-6 flex flex-col justify-between space-y-4">
+        <div class="glass-card rounded-2xl p-4 sm:p-6 flex flex-col justify-between space-y-4 shadow-2xl">
           <div>
-            <h3 class="text-md font-bold mb-3 text-gray-200">Packing Density Analysis</h3>
+            <h3 class="text-md font-bold mb-3 text-gray-200">Packing Analysis</h3>
             <div id="result-3d" class="p-4 rounded-xl bg-gray-900/60 border border-gray-800 text-sm text-gray-400 text-center">
-              Estimate how many unit objects fit into the transparent container. Account for packing fraction (Kepler sphere limit ~74%).
+              Estimate unit cube capacity inside the procedural container.
             </div>
           </div>
           <div class="bg-gray-900/40 p-3 rounded-lg border border-gray-800 text-xs text-gray-400 space-y-1">
-            <p><strong class="text-gray-200">Kepler Limit:</strong> Spherical objects leave empty spaces (~26% void fraction).</p>
+            <p><strong class="text-gray-200">Spatial Ratio:</strong> Multiply length × width × height dimensions.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ================= TAB 4: FERMI PROBLEMS ================= -->
+    <!-- ================= TAB 4: PROCEDURAL FERMI PROBLEMS ================= -->
     <section id="tab-fermi" class="tab-content hidden space-y-6">
-      <div class="glass-card rounded-2xl p-4 sm:p-6 space-y-6 border border-emerald-500/20">
+      <div class="glass-card rounded-2xl p-4 sm:p-6 space-y-6 border border-emerald-500/20 shadow-2xl">
         
         <!-- Header Controls -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-800 pb-4">
           <div>
             <h2 class="text-xl font-bold text-emerald-400 flex items-center gap-2">
-              <i data-lucide="brain" class="w-6 h-6"></i> Order of Magnitude Fermi Estimator
+              <i data-lucide="brain" class="w-6 h-6"></i> Procedural Fermi Estimation Engine
             </h2>
-            <p class="text-xs text-gray-400">Deconstruct complex real-world estimation questions into sub-factors.</p>
+            <p class="text-xs text-gray-400">Algorithmic generator producing infinite unique order-of-magnitude reasoning challenges.</p>
           </div>
 
           <div class="flex items-center space-x-3">
-            <label class="text-xs text-gray-400 font-semibold">Difficulty:</label>
-            <select id="fermi-diff-select" onchange="changeFermiDiff()" class="bg-gray-900 border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-emerald-300 font-medium focus:ring-1 focus:ring-emerald-500 outline-none">
-              <option value="easy">Easy (2 factors)</option>
-              <option value="medium" selected>Medium (3 factors)</option>
-              <option value="hard">Hard (4-5 factors)</option>
-              <option value="crazy">Fermi Master (Extreme)</option>
+            <label class="text-xs text-gray-400 font-semibold">Complexity:</label>
+            <select id="fermi-diff-select" onchange="generateFermiChallenge()" class="bg-gray-900 border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-emerald-300 font-medium focus:ring-1 focus:ring-emerald-500 outline-none">
+              <option value="easy">Easy (2 Factors)</option>
+              <option value="medium" selected>Medium (3 Factors)</option>
+              <option value="hard">Hard (4 Factors)</option>
+              <option value="extreme">Fermi Master (Astrophysical)</option>
             </select>
-            <button onclick="nextFermiChallenge()" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg transition shadow-md shadow-emerald-600/30 flex items-center gap-1">
-              <i data-lucide="shuffle" class="w-3.5 h-3.5"></i> Next Challenge
+            <button onclick="generateFermiChallenge()" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg transition shadow-md shadow-emerald-600/30 flex items-center gap-1">
+              <i data-lucide="shuffle" class="w-3.5 h-3.5"></i> New Fermi Prompt
             </button>
           </div>
         </div>
@@ -260,30 +259,30 @@
         <!-- Dynamic Challenge Question Box -->
         <div class="bg-emerald-950/20 border border-emerald-500/30 p-4 sm:p-5 rounded-xl">
           <div class="flex items-center justify-between text-xs text-emerald-400 font-mono mb-2">
-            <span id="fermi-category">CATEGORY: URBAN LOGISTICS</span>
+            <span id="fermi-category">CATEGORY: GENERATING...</span>
             <span id="fermi-difficulty-badge" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">MEDIUM</span>
           </div>
           <h3 id="fermi-prompt-title" class="text-base sm:text-lg font-bold text-white mb-2">
-            Loading Fermi Question...
+            Synthesizing procedural question...
           </h3>
           <p id="fermi-prompt-hint" class="text-xs text-gray-300 italic">
-            Break down the problem into estimates below.
+            Deconstruct factors below to compute estimation.
           </p>
         </div>
 
         <!-- Factor Breakdown Sliders Container -->
         <div class="space-y-4">
           <div class="flex items-center justify-between">
-            <h4 class="text-sm font-bold text-gray-200 uppercase tracking-wider">Step-by-Step Parameter Estimator</h4>
-            <span class="text-xs text-gray-400">Adjust sliders or type values</span>
+            <h4 class="text-sm font-bold text-gray-200 uppercase tracking-wider">Algorithmic Parameter Breakdown</h4>
+            <span class="text-xs text-gray-400">Adjust sliders to calculate</span>
           </div>
 
           <div id="fermi-factors-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Dynamic Factor Cards Inserted Here by JS -->
+            <!-- Dynamically populated factor sliders -->
           </div>
         </div>
 
-        <!-- Dynamic Combined Calculation Result Box -->
+        <!-- Dynamic Calculation Result Box -->
         <div class="glass-card p-5 rounded-xl border border-gray-800 space-y-4">
           <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
@@ -303,10 +302,10 @@
           <div id="fermi-solution-box" class="hidden p-4 rounded-xl bg-gray-900 border border-emerald-500/40 space-y-3">
             <div class="flex items-center justify-between">
               <h5 class="text-sm font-bold text-emerald-400 flex items-center gap-2">
-                <i data-lucide="check" class="w-4 h-4"></i> Ground Truth Solution
+                <i data-lucide="check" class="w-4 h-4"></i> Algorithmic Ground Truth
               </h5>
               <span id="fermi-accuracy-score" class="text-xs font-mono font-bold px-2 py-1 rounded bg-emerald-500/20 text-emerald-300">
-                Precision: 92%
+                Precision: 0%
               </span>
             </div>
             <p id="fermi-truth-text" class="text-sm text-gray-200 font-mono"></p>
@@ -318,13 +317,13 @@
 
     <!-- ================= TAB 5: STATS & CLT ================= -->
     <section id="tab-stat" class="tab-content hidden space-y-6">
-      <div class="glass-card rounded-2xl p-4 sm:p-6 space-y-6 border border-blue-500/20">
+      <div class="glass-card rounded-2xl p-4 sm:p-6 space-y-6 border border-blue-500/20 shadow-2xl">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2">
               <i data-lucide="line-chart" class="w-5 h-5"></i> Central Limit Theorem & Sampling Simulation
             </h2>
-            <p class="text-xs text-gray-400">Observe sample means ($\bar{x}$) converge into a Gaussian Normal Distribution as sample size $N$ increases.</p>
+            <p class="text-xs text-gray-400">Observe sample means converge into a Gaussian Normal Distribution as sample size $N$ increases.</p>
           </div>
           <div class="flex space-x-2">
             <button onclick="runCLTSample(1)" class="px-3 py-1.5 bg-blue-600/80 hover:bg-blue-500 text-white text-xs rounded-lg font-medium">Draw 1 Sample</button>
@@ -347,842 +346,4 @@
               <label class="text-gray-400">Base Distribution Type:</label>
               <select id="clt-dist-type" onchange="resetCLT()" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-white outline-none">
                 <option value="uniform">Uniform (Flat)</option>
-                <option value="skewed">Right-Skewed Exponential</option>
-                <option value="bimodal">Bimodal (Two Peaks)</option>
-              </select>
-            </div>
-
-            <div class="space-y-2">
-              <div class="flex justify-between text-gray-400">
-                <span>Sample Size ($N$):</span>
-                <span id="clt-n-val" class="font-mono text-white">25</span>
-              </div>
-              <input type="range" id="clt-n-slider" min="2" max="100" value="25" oninput="document.getElementById('clt-n-val').innerText=this.value; resetCLT()" class="w-full accent-blue-500">
-            </div>
-
-            <div class="pt-4 border-t border-gray-800 space-y-1 font-mono text-gray-300">
-              <p>Total Samples ($k$): <span id="clt-total-k" class="text-blue-400 font-bold">0</span></p>
-              <p>Mean of Means ($\mu_{\bar{x}}$): <span id="clt-mean-val" class="text-emerald-400 font-bold">0.00</span></p>
-              <p>Std Error ($\sigma/\sqrt{N}$): <span id="clt-se-val" class="text-amber-400 font-bold">0.00</span></p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= TAB 6: PERMUTATIONS & COUNTING ================= -->
-    <section id="tab-combo" class="tab-content hidden space-y-6">
-      <div class="glass-card rounded-2xl p-4 sm:p-6 space-y-6 border border-pink-500/20">
-        <div>
-          <h2 class="text-lg font-bold text-pink-400 flex items-center gap-2">
-            <i data-lucide="git-fork" class="w-5 h-5"></i> Permutations, Combinations & Counting Space
-          </h2>
-          <p class="text-xs text-gray-400">Estimate state-space sizes of logarithmic explosion problems ($n!$, $n\text{P}k$, $n\text{C}k$).</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Problem Box -->
-          <div class="glass-card p-5 rounded-xl border border-gray-800 space-y-4">
-            <h3 id="combo-title" class="font-bold text-base text-white">Loading Problem...</h3>
-            <p id="combo-desc" class="text-xs text-gray-300 leading-relaxed"></p>
-
-            <div class="space-y-3 pt-2">
-              <label class="text-xs text-gray-400 font-medium">Estimate Power of 10 ($10^X$):</label>
-              <div class="flex items-center space-x-3">
-                <span class="text-xs text-gray-400">10^</span>
-                <input type="number" id="input-combo" min="0" max="100" step="1" placeholder="Exponent..." class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2 text-white font-mono focus:ring-2 focus:ring-pink-500 outline-none">
-                <button onclick="submitCombo()" class="px-5 py-2 bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-pink-600/30">
-                  Submit
-                </button>
-              </div>
-            </div>
-
-            <div id="result-combo" class="p-3 rounded-lg bg-gray-900/60 border border-gray-800 text-xs text-gray-400 text-center">
-              Estimate the exponent $X$ in $10^X$ for total possibilities.
-            </div>
-          </div>
-
-          <!-- Scale Visualizer -->
-          <div class="glass-card p-5 rounded-xl border border-gray-800 space-y-3 flex flex-col justify-between">
-            <div>
-              <h4 class="text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">Logarithmic Reference Scales</h4>
-              <ul class="text-xs space-y-2 text-gray-400 font-mono">
-                <li class="flex justify-between border-b border-gray-800 pb-1">
-                  <span>4-Digit PIN:</span><span class="text-pink-400">10⁴ (10,000)</span>
-                </li>
-                <li class="flex justify-between border-b border-gray-800 pb-1">
-                  <span>Deck of 52 Cards (52!):</span><span class="text-pink-400">10⁶⁸</span>
-                </li>
-                <li class="flex justify-between border-b border-gray-800 pb-1">
-                  <span>Atoms in Universe:</span><span class="text-pink-400">10⁸⁰</span>
-                </li>
-                <li class="flex justify-between">
-                  <span>Chess Board Positions:</span><span class="text-pink-400">10¹²⁰</span>
-                </li>
-              </ul>
-            </div>
-            <button onclick="nextComboProblem()" class="w-full py-2 bg-gray-800 hover:bg-gray-700 text-xs font-semibold rounded-lg text-gray-300 transition border border-gray-700">
-              Generate New Problem
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- MOBILE BOTTOM NAV BAR -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 glass-card border-t border-gray-800 z-50 px-2 py-2 flex justify-around items-center text-[10px]">
-    <button onclick="switchTab('1d')" id="mnav-1d" class="flex flex-col items-center text-brand-400">
-      <i data-lucide="ruler" class="w-5 h-5"></i><span>1D</span>
-    </button>
-    <button onclick="switchTab('2d')" id="mnav-2d" class="flex flex-col items-center text-gray-400">
-      <i data-lucide="square" class="w-5 h-5"></i><span>2D</span>
-    </button>
-    <button onclick="switchTab('3d')" id="mnav-3d" class="flex flex-col items-center text-gray-400">
-      <i data-lucide="box" class="w-5 h-5"></i><span>3D</span>
-    </button>
-    <button onclick="switchTab('fermi')" id="mnav-fermi" class="flex flex-col items-center text-gray-400">
-      <i data-lucide="brain" class="w-5 h-5"></i><span>Fermi</span>
-    </button>
-    <button onclick="switchTab('stat')" id="mnav-stat" class="flex flex-col items-center text-gray-400">
-      <i data-lucide="line-chart" class="w-5 h-5"></i><span>Stats</span>
-    </button>
-    <button onclick="switchTab('combo')" id="mnav-combo" class="flex flex-col items-center text-gray-400">
-      <i data-lucide="git-fork" class="w-5 h-5"></i><span>Count</span>
-    </button>
-  </nav>
-
-  <!-- CALCULATOR MODAL OVERLAY -->
-  <div id="calc-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="glass-card max-w-sm w-full p-5 rounded-2xl border border-gray-700 space-y-4 shadow-2xl">
-      <div class="flex items-center justify-between">
-        <h3 class="font-bold text-sm text-gray-200 flex items-center gap-2">
-          <i data-lucide="binary" class="w-4 h-4 text-brand-400"></i> Scientific Calculator
-        </h3>
-        <button onclick="toggleCalcModal()" class="text-gray-400 hover:text-white">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-
-      <input type="text" id="calc-display" readonly value="0" class="w-full bg-gray-950 border border-gray-800 text-right font-mono text-xl p-3 rounded-xl text-emerald-400">
-
-      <div class="grid grid-cols-4 gap-2 text-xs font-bold">
-        <button onclick="calcInput('C')" class="p-3 bg-red-600/30 text-red-300 rounded-lg hover:bg-red-600/50">C</button>
-        <button onclick="calcInput('(')" class="p-3 bg-gray-800 text-gray-200 rounded-lg hover:bg-gray-700">(</button>
-        <button onclick="calcInput(')')" class="p-3 bg-gray-800 text-gray-200 rounded-lg hover:bg-gray-700">)</button>
-        <button onclick="calcInput('/')" class="p-3 bg-brand-600/30 text-brand-300 rounded-lg hover:bg-brand-600/50">/</button>
-
-        <button onclick="calcInput('7')" class="p-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800">7</button>
-        <button onclick="calcInput('8')" class="p-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800">8</button>
-        <button onclick="calcInput('9')" class="p-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800">9</button>
-        <button onclick="calcInput('*')" class="p-3 bg-brand-600/30 text-brand-300 rounded-lg hover:bg-brand-600/50">*</button>
-
-        <button onclick="calcInput('4')" class="p-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800">4</button>
-        <button onclick="calcInput('5')" class="p-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800">5</button>
-        <button onclick="calcInput('6')" class="p-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800">6</button>
-        <button onclick="calcInput('-')" class="p-3 bg-brand-600/30 text-brand-300 rounded-lg hover:bg-brand-600/50">-</button>
-
-        <button onclick="calcInput('1')" class="p-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800">1</button>
-        <button onclick="calcInput('2')" class="p-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800">2</button>
-        <button onclick="calcInput('3')" class="p-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800">3</button>
-        <button onclick="calcInput('+')" class="p-3 bg-brand-600/30 text-brand-300 rounded-lg hover:bg-brand-600/50">+</button>
-
-        <button onclick="calcInput('0')" class="p-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800">0</button>
-        <button onclick="calcInput('.')" class="p-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800">.</button>
-        <button onclick="calcInput('pow')" class="p-3 bg-purple-600/30 text-purple-300 rounded-lg hover:bg-purple-600/50">^</button>
-        <button onclick="calcEval()" class="p-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-500">=</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- JAVASCRIPT LOGIC ENGINE -->
-  <script>
-    // Global State Container
-    const state = {
-      score: 0,
-      streak: 0,
-      activeTab: '1d',
-      data1D: {},
-      data2D: {},
-      data3D: {},
-      dataFermi: {},
-      dataCombo: {}
-    };
-
-    // Load LocalStorage State
-    function initStore() {
-      const savedScore = localStorage.getItem('est_score');
-      const savedStreak = localStorage.getItem('est_streak');
-      if (savedScore) state.score = parseInt(savedScore, 10);
-      if (savedStreak) state.streak = parseInt(savedStreak, 10);
-      updateScoreboard();
-    }
-
-    function updateScoreboard() {
-      document.getElementById('global-score').innerText = state.score;
-      document.getElementById('global-streak').innerText = state.streak;
-      localStorage.setItem('est_score', state.score);
-      localStorage.setItem('est_streak', state.streak);
-    }
-
-    // TAB SWITCHING ENGINE (Isolates inputs and cleans up tab state completely)
-    function switchTab(tabId) {
-      state.activeTab = tabId;
-
-      // Hide all tabs
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-
-      // Update Desktop Nav styles
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.className = "tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap text-gray-400 hover:text-white hover:bg-gray-800";
-      });
-      const activeDesktopBtn = document.getElementById(`tab-btn-${tabId}`);
-      if (activeDesktopBtn) {
-        activeDesktopBtn.className = "tab-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap bg-brand-600 text-white shadow-lg shadow-brand-600/30";
-      }
-
-      // Update Mobile Nav styles
-      document.querySelectorAll('nav button').forEach(btn => btn.className = "flex flex-col items-center text-gray-400");
-      const activeMobileBtn = document.getElementById(`mnav-${tabId}`);
-      if (activeMobileBtn) activeMobileBtn.className = "flex flex-col items-center text-brand-400";
-
-      // Trigger Tab-specific init if necessary
-      if (tabId === '3d' && !state.data3D.initialized) init3D();
-      if (tabId === 'stat' && !state.dataStatInit) initCLTChart();
-    }
-
-    /* ================= 1D SCALE LOGIC ================= */
-    const units1D = [
-      { name: "Car Lengths", size: 4.5, icon: "car" },
-      { name: "City Buses", size: 12.0, icon: "bus" },
-      { name: "Football Fields", size: 100.0, icon: "flag" },
-      { name: "Standard Pencils", size: 0.19, icon: "pen" }
-    ];
-
-    function reset1D() {
-      const unit = units1D[Math.floor(Math.random() * units1D.length)];
-      const targetLen = (Math.random() * 80 + 10).toFixed(1); // 10 to 90 meters
-      const actualCount = (targetLen / unit.size).toFixed(1);
-
-      state.data1D = { unit, targetLen, actualCount };
-
-      document.getElementById('desc-1d').innerHTML = 
-        `Estimate how many <strong class="text-brand-400">${unit.name}</strong> (${unit.size}m each) fit along a segment of length <strong class="text-white">${targetLen}m</strong>.`;
-      
-      document.getElementById('info-1d').innerHTML = `
-        <li>Target Length: <span class="font-mono text-white">${targetLen} meters</span></li>
-        <li>Unit Length: <span class="font-mono text-white">${unit.size} meters</span></li>
-      `;
-      document.getElementById('input-1d').value = '';
-      document.getElementById('result-1d').innerHTML = 'Enter your estimated count above.';
-      document.getElementById('result-1d').className = 'p-4 rounded-xl bg-gray-900/60 border border-gray-800 text-sm text-gray-400 text-center';
-
-      render1DCanvas();
-    }
-
-    function render1DCanvas() {
-      const cvs = document.getElementById('canvas-1d');
-      const ctx = cvs.getContext('2d');
-      cvs.width = cvs.clientWidth;
-      cvs.height = cvs.clientHeight;
-
-      ctx.clearRect(0, 0, cvs.width, cvs.height);
-
-      // Target Line
-      ctx.strokeStyle = '#6366f1';
-      ctx.lineWidth = 6;
-      ctx.beginPath();
-      ctx.moveTo(30, cvs.height / 2);
-      ctx.lineTo(cvs.width - 30, cvs.height / 2);
-      ctx.stroke();
-
-      // Caps
-      ctx.fillStyle = '#818cf8';
-      ctx.fillRect(26, cvs.height / 2 - 15, 8, 30);
-      ctx.fillRect(cvs.width - 34, cvs.height / 2 - 15, 8, 30);
-    }
-
-    function submit1D() {
-      const est = parseFloat(document.getElementById('input-1d').value);
-      if (isNaN(est) || est <= 0) return;
-
-      const actual = parseFloat(state.data1D.actualCount);
-      const errorPct = (Math.abs(est - actual) / actual) * 100;
-
-      let scoreGain = 0;
-      let msg = '';
-      let boxClass = '';
-
-      if (errorPct <= 10) {
-        scoreGain = 100;
-        state.streak++;
-        msg = `🎯 Outstanding! Actual count was <strong>${actual}</strong> (Error: ${errorPct.toFixed(1)}%). +100 PTS!`;
-        boxClass = 'p-4 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-center';
-      } else if (errorPct <= 25) {
-        scoreGain = 50;
-        state.streak++;
-        msg = `👍 Solid Estimate! Actual count was <strong>${actual}</strong> (Error: ${errorPct.toFixed(1)}%). +50 PTS.`;
-        boxClass = 'p-4 rounded-xl bg-blue-950/60 border border-blue-500/40 text-blue-300 text-center';
-      } else {
-        state.streak = 0;
-        msg = `❌ Needs Calibration. Actual count was <strong>${actual}</strong> (Error: ${errorPct.toFixed(1)}%).`;
-        boxClass = 'p-4 rounded-xl bg-red-950/60 border border-red-500/40 text-red-300 text-center';
-      }
-
-      state.score += scoreGain;
-      updateScoreboard();
-
-      const resBox = document.getElementById('result-1d');
-      resBox.innerHTML = msg;
-      resBox.className = boxClass;
-    }
-
-    /* ================= 2D AREA LOGIC ================= */
-    function reset2D() {
-      const width = Math.floor(Math.random() * 15 + 10);
-      const height = Math.floor(Math.random() * 12 + 8);
-      const actualArea = width * height;
-
-      state.data2D = { width, height, actualArea };
-
-      document.getElementById('desc-2d').innerHTML = 
-        `Estimate how many 1x1 unit tiles fit in this grid container.`;
-
-      document.getElementById('input-2d').value = '';
-      document.getElementById('result-2d').innerHTML = 'Estimate the total area in tiles.';
-      document.getElementById('result-2d').className = 'p-4 rounded-xl bg-gray-900/60 border border-gray-800 text-sm text-gray-400 text-center';
-
-      render2DCanvas();
-    }
-
-    function render2DCanvas() {
-      const cvs = document.getElementById('canvas-2d');
-      const ctx = cvs.getContext('2d');
-      cvs.width = cvs.clientWidth;
-      cvs.height = cvs.clientHeight;
-
-      ctx.clearRect(0, 0, cvs.width, cvs.height);
-
-      const margin = 40;
-      const rectW = cvs.width - margin * 2;
-      const rectH = cvs.height - margin * 2;
-
-      ctx.strokeStyle = '#c084fc';
-      ctx.lineWidth = 3;
-      ctx.fillStyle = 'rgba(192, 132, 252, 0.1)';
-      ctx.fillRect(margin, margin, rectW, rectH);
-      ctx.strokeRect(margin, margin, rectW, rectH);
-    }
-
-    function submit2D() {
-      const est = parseFloat(document.getElementById('input-2d').value);
-      if (isNaN(est) || est <= 0) return;
-
-      const actual = state.data2D.actualArea;
-      const errorPct = (Math.abs(est - actual) / actual) * 100;
-
-      let msg = '';
-      let boxClass = '';
-
-      if (errorPct <= 15) {
-        state.score += 80;
-        state.streak++;
-        msg = `🎯 Great job! Exact area: <strong>${actual}</strong> tiles (Error: ${errorPct.toFixed(1)}%).`;
-        boxClass = 'p-4 rounded-xl bg-purple-950/60 border border-purple-500/40 text-purple-300 text-center';
-      } else {
-        state.streak = 0;
-        msg = `❌ Off target. Exact area: <strong>${actual}</strong> tiles (Error: ${errorPct.toFixed(1)}%).`;
-        boxClass = 'p-4 rounded-xl bg-red-950/60 border border-red-500/40 text-red-300 text-center';
-      }
-      updateScoreboard();
-
-      const resBox = document.getElementById('result-2d');
-      resBox.innerHTML = msg;
-      resBox.className = boxClass;
-    }
-
-    /* ================= 3D VOLUME LOGIC (THREE.JS) ================= */
-    function init3D() {
-      state.data3D.initialized = true;
-      const container = document.getElementById('viewport-3d');
-      
-      const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x030712);
-
-      const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-      camera.position.set(12, 10, 15);
-
-      const renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      container.appendChild(renderer.domElement);
-
-      const controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-
-      // Lights
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-      scene.add(ambientLight);
-
-      const dirLight = new THREE.DirectionalLight(0x06b6d4, 0.8);
-      dirLight.position.set(10, 20, 10);
-      scene.add(dirLight);
-
-      state.data3D.scene = scene;
-      state.data3D.renderer = renderer;
-      state.data3D.camera = camera;
-
-      reset3D();
-
-      function animate() {
-        requestAnimationFrame(animate);
-        controls.update();
-        renderer.render(scene, camera);
-      }
-      animate();
-
-      window.addEventListener('resize', () => {
-        if (!container.clientWidth) return;
-        camera.aspect = container.clientWidth / container.clientHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(container.clientWidth, container.clientHeight);
-      });
-    }
-
-    function reset3D() {
-      if (!state.data3D.scene) return;
-      const scene = state.data3D.scene;
-
-      // Clear existing mesh
-      while(scene.children.length > 2) { 
-        scene.remove(scene.children[scene.children.length - 1]); 
-      }
-
-      const dx = Math.floor(Math.random() * 4 + 3);
-      const dy = Math.floor(Math.random() * 4 + 3);
-      const dz = Math.floor(Math.random() * 4 + 3);
-      const count = dx * dy * dz;
-
-      state.data3D.actualCount = count;
-
-      // Draw Wireframe Container
-      const boxGeo = new THREE.BoxGeometry(dx, dy, dz);
-      const wireGeo = new THREE.WireframeGeometry(boxGeo);
-      const lineMaterial = new THREE.LineBasicMaterial({ color: 0x06b6d4, linewidth: 2 });
-      const wireframe = new THREE.LineSegments(wireGeo, lineMaterial);
-      scene.add(wireframe);
-
-      document.getElementById('desc-3d').innerHTML = `Estimate the total 1x1x1 unit cubes inside this 3D box frame.`;
-      document.getElementById('input-3d').value = '';
-      document.getElementById('result-3d').innerHTML = 'Estimate unit cube capacity inside container.';
-      document.getElementById('result-3d').className = 'p-4 rounded-xl bg-gray-900/60 border border-gray-800 text-sm text-gray-400 text-center';
-    }
-
-    function submit3D() {
-      const est = parseFloat(document.getElementById('input-3d').value);
-      if (isNaN(est) || est <= 0) return;
-
-      const actual = state.data3D.actualCount;
-      const errorPct = (Math.abs(est - actual) / actual) * 100;
-
-      let msg = '';
-      let boxClass = '';
-
-      if (errorPct <= 15) {
-        state.score += 100;
-        state.streak++;
-        msg = `🎯 Spatial Genius! Actual cube count: <strong>${actual}</strong> (Error: ${errorPct.toFixed(1)}%).`;
-        boxClass = 'p-4 rounded-xl bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 text-center';
-      } else {
-        state.streak = 0;
-        msg = `❌ Miscalculated. Actual cube count: <strong>${actual}</strong> (Error: ${errorPct.toFixed(1)}%).`;
-        boxClass = 'p-4 rounded-xl bg-red-950/60 border border-red-500/40 text-red-300 text-center';
-      }
-      updateScoreboard();
-
-      const resBox = document.getElementById('result-3d');
-      resBox.innerHTML = msg;
-      resBox.className = boxClass;
-    }
-
-    /* ================= FERMI ESTIMATION LOGIC (COMPLETELY OVERHAULED & EXPANDED) ================= */
-    const fermiDatabase = [
-      // Easy (2 factors)
-      {
-        diff: 'easy',
-        cat: 'CONSUMPTION & ENERGY',
-        title: 'How many cups of coffee are consumed in New York City every single day?',
-        hint: 'Break down by adult coffee drinkers and average cups per person daily.',
-        unit: 'cups / day',
-        truth: 7.5e6,
-        explanation: 'NYC has ~8.5M residents. ~70% are adults (~6M). Coffee drinkers average 1.25 cups daily → ~7.5 Million cups/day.',
-        factors: [
-          { name: 'NYC Adult Population', unit: 'people', min: 1e6, max: 1e7, step: 5e5, val: 6e6, log: true },
-          { name: 'Daily Cups per Person', unit: 'cups/person', min: 0.2, max: 4.0, step: 0.1, val: 1.25, log: false }
-        ]
-      },
-      {
-        diff: 'easy',
-        cat: 'GEOGRAPHY & NATURE',
-        title: 'How many standard soccer fields could fit across the surface of Central Park?',
-        hint: 'Consider Central Park area (~3.4 km²) vs soccer field area (~0.007 km²).',
-        unit: 'soccer fields',
-        truth: 485,
-        explanation: 'Central Park is ~3,410,000 m². A FIFA regulation soccer field is 105m × 68m ≈ 7,140 m². 3,410,000 / 7,140 ≈ 480 fields.',
-        factors: [
-          { name: 'Central Park Area', unit: 'm²', min: 1e6, max: 1e7, step: 1e5, val: 3.4e6, log: true },
-          { name: 'Soccer Field Area', unit: 'm²', min: 3000, max: 12000, step: 500, val: 7140, log: false }
-        ]
-      },
-      // Medium (3 factors)
-      {
-        diff: 'medium',
-        cat: 'URBAN LOGISTICS',
-        title: 'How many piano tuners operate in the city of Chicago?',
-        hint: 'Classic Fermi problem! Combine population, piano ownership rate, tuning frequency, and tuner workload.',
-        unit: 'tuners',
-        truth: 125,
-        explanation: 'Chicago Pop = 2.7M (~1M households). 2% own pianos = 20,000 pianos. Tuned once a year = 20,000 tunings/yr. A tuner does 4 tunings/day × 250 days = 1,000 tunings/yr. 20,000 / 1,000 = 20 tuners (approx order 10²).',
-        factors: [
-          { name: 'Chicago Population', unit: 'people', min: 5e5, max: 5e6, step: 1e5, val: 2.7e6, log: true },
-          { name: 'Piano Ownership Rate', unit: 'fraction', min: 0.005, max: 0.1, step: 0.005, val: 0.02, log: false },
-          { name: 'Tunings per Tuner Year', unit: 'tunings/tuner', min: 200, max: 2000, step: 100, val: 1000, log: false }
-        ]
-      },
-      {
-        diff: 'medium',
-        cat: 'TECH & COMPUTING',
-        title: 'How many query requests does Google search process globally every second?',
-        hint: 'Estimate global internet users, daily searches per user, and seconds per day.',
-        unit: 'queries / sec',
-        truth: 99000,
-        explanation: 'Google processes ~8.5 Billion searches per day. 8.5B / 86,400 seconds in a day ≈ 99,000 queries every second!',
-        factors: [
-          { name: 'Active Google Search Users', unit: 'people', min: 1e8, max: 8e9, step: 1e8, val: 4e9, log: true },
-          { name: 'Avg Searches per User / Day', unit: 'searches', min: 0.5, max: 10, step: 0.5, val: 2.2, log: false },
-          { name: 'Seconds in a Day', unit: 'sec', min: 86400, max: 86400, step: 1, val: 86400, log: false }
-        ]
-      },
-      // Hard (4 factors)
-      {
-        diff: 'hard',
-        cat: 'PHYSICS & ENVIRONMENT',
-        title: 'How many liters of gasoline are burned by automobiles in the US every year?',
-        hint: 'Combine number of registered cars, avg miles driven, fuel efficiency (MPG), and gallon-to-liter conversion.',
-        unit: 'liters / year',
-        truth: 5e11,
-        explanation: '280M vehicles × 12,000 miles/yr = 3.36 Trillion miles. At 24 MPG = 140 Billion gallons ≈ 530 Billion liters (5.3 × 10¹¹ L).',
-        factors: [
-          { name: 'US Registered Vehicles', unit: 'vehicles', min: 5e7, max: 5e8, step: 1e7, val: 2.8e8, log: true },
-          { name: 'Avg Miles per Vehicle/Yr', unit: 'miles', min: 3000, max: 25000, step: 1000, val: 12000, log: false },
-          { name: 'Fuel Efficiency (MPG)', unit: 'mpg', min: 10, max: 50, step: 2, val: 24, log: false },
-          { name: 'Liters per Gallon', unit: 'L/gal', min: 3.785, max: 3.785, step: 0.001, val: 3.785, log: false }
-        ]
-      },
-      // Extreme Fermi Master
-      {
-        diff: 'crazy',
-        cat: 'ASTROPHYSICS',
-        title: 'How many drops of water exist in all the oceans on Earth combined?',
-        hint: 'Estimate ocean total surface area, average depth, and volume of a single raindrop (~0.05 mL).',
-        unit: 'drops of water',
-        truth: 2.7e25,
-        explanation: 'Ocean Vol = 1.335 Billion km³ = 1.335 × 10²¹ Liters = 1.335 × 10²⁴ mL. At 0.05 mL per drop → 2.67 × 10²⁵ drops!',
-        factors: [
-          { name: 'Ocean Surface Area', unit: 'km²', min: 1e8, max: 6e8, step: 1e7, val: 3.6e8, log: true },
-          { name: 'Avg Ocean Depth', unit: 'meters', min: 1000, max: 6000, step: 200, val: 3700, log: false },
-          { name: 'Volume of One Drop', unit: 'm³', min: 1e-8, max: 1e-6, step: 1e-8, val: 5e-8, log: true }
-        ]
-      }
-    ];
-
-    let currentFermi = null;
-
-    function changeFermiDiff() {
-      nextFermiChallenge();
-    }
-
-    function nextFermiChallenge() {
-      const diff = document.getElementById('fermi-diff-select').value;
-      const candidates = fermiDatabase.filter(item => item.diff === diff);
-      
-      currentFermi = candidates[Math.floor(Math.random() * candidates.length)] || fermiDatabase[0];
-
-      // Hide Solution Box
-      document.getElementById('fermi-solution-box').classList.add('hidden');
-
-      // Set Challenge Titles
-      document.getElementById('fermi-category').innerText = `CATEGORY: ${currentFermi.cat}`;
-      document.getElementById('fermi-difficulty-badge').innerText = currentFermi.diff.toUpperCase();
-      document.getElementById('fermi-prompt-title').innerText = currentFermi.title;
-      document.getElementById('fermi-prompt-hint').innerText = currentFermi.hint;
-      document.getElementById('fermi-unit-label').innerText = currentFermi.unit;
-
-      // Render Dynamic Factor Sliders
-      const container = document.getElementById('fermi-factors-container');
-      container.innerHTML = '';
-
-      currentFermi.factors.forEach((fact, idx) => {
-        const card = document.createElement('div');
-        card.className = 'glass-card p-4 rounded-xl border border-gray-800 space-y-3';
-        card.innerHTML = `
-          <div class="flex justify-between items-center text-xs">
-            <span class="font-bold text-gray-200">${fact.name}</span>
-            <span id="fermi-val-disp-${idx}" class="font-mono text-emerald-400 font-bold">${formatSci(fact.val)} ${fact.unit}</span>
-          </div>
-          <input type="range" 
-                 id="fermi-slider-${idx}" 
-                 min="${fact.min}" 
-                 max="${fact.max}" 
-                 step="${fact.step}" 
-                 value="${fact.val}" 
-                 oninput="updateFermiCalc()" 
-                 class="w-full accent-emerald-500 cursor-pointer">
-        `;
-        container.appendChild(card);
-      });
-
-      updateFermiCalc();
-    }
-
-    function updateFermiCalc() {
-      if (!currentFermi) return;
-
-      let total = 1;
-      currentFermi.factors.forEach((fact, idx) => {
-        const slider = document.getElementById(`fermi-slider-${idx}`);
-        const val = parseFloat(slider.value);
-        document.getElementById(`fermi-val-disp-${idx}`).innerText = `${formatSci(val)} ${fact.unit}`;
-
-        if (currentFermi.title.includes('soccer fields')) {
-          total = idx === 0 ? val : total / val;
-        } else if (currentFermi.title.includes('piano tuners')) {
-          if (idx === 0) total = val;
-          if (idx === 1) total *= val;
-          if (idx === 2) total /= val;
-        } else if (currentFermi.title.includes('drops of water')) {
-          if (idx === 0) total = val * 1e6; // km2 to m2
-          if (idx === 1) total *= val; // volume m3
-          if (idx === 2) total /= val; // total / drop vol
-        } else {
-          total *= val;
-        }
-      });
-
-      state.dataFermi.userTotal = total;
-      document.getElementById('fermi-calc-value').innerText = formatSci(total);
-    }
-
-    function submitFermiEstimate() {
-      if (!currentFermi) return;
-
-      const userCalc = state.dataFermi.userTotal;
-      const truth = currentFermi.truth;
-
-      // Order of Magnitude Log Error
-      const logUser = Math.log10(userCalc);
-      const logTruth = Math.log10(truth);
-      const logDiff = Math.abs(logUser - logTruth);
-
-      let accuracy = Math.max(0, 100 - logDiff * 30).toFixed(0);
-
-      document.getElementById('fermi-truth-text').innerHTML = `Ground Truth Calculation: <strong>${formatSci(truth)}</strong> ${currentFermi.unit}`;
-      document.getElementById('fermi-explanation-text').innerHTML = currentFermi.explanation;
-      document.getElementById('fermi-accuracy-score').innerText = `Order of Magnitude Precision: ${accuracy}%`;
-
-      document.getElementById('fermi-solution-box').classList.remove('hidden');
-
-      if (logDiff <= 1.0) {
-        state.score += 150;
-        state.streak++;
-      } else {
-        state.streak = 0;
-      }
-      updateScoreboard();
-    }
-
-    function formatSci(val) {
-      if (val >= 1e5 || val <= 1e-3) {
-        return val.toExponential(2);
-      }
-      return val.toLocaleString(undefined, { maximumFractionDigits: 2 });
-    }
-
-    /* ================= STATS & CLT ENGINE ================= */
-    let cltChart = null;
-    let cltMeans = [];
-
-    function initCLTChart() {
-      state.dataStatInit = true;
-      const ctx = document.getElementById('clt-chart').getContext('2d');
-
-      cltChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: Array.from({ length: 20 }, (_, i) => (i * 0.05).toFixed(2)),
-          datasets: [{
-            label: 'Sample Means Frequency',
-            data: new Array(20).fill(0),
-            backgroundColor: 'rgba(59, 130, 246, 0.6)',
-            borderColor: '#3b82f6',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-            y: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255,255,255,0.05)' } }
-          }
-        }
-      });
-
-      resetCLT();
-    }
-
-    function resetCLT() {
-      cltMeans = [];
-      if (cltChart) {
-        cltChart.data.datasets[0].data = new Array(20).fill(0);
-        cltChart.update();
-      }
-      document.getElementById('clt-total-k').innerText = '0';
-      document.getElementById('clt-mean-val').innerText = '0.00';
-      document.getElementById('clt-se-val').innerText = '0.00';
-    }
-
-    function runCLTSample(count) {
-      const distType = document.getElementById('clt-dist-type').value;
-      const N = parseInt(document.getElementById('clt-n-slider').value, 10);
-
-      for (let i = 0; i < count; i++) {
-        let sum = 0;
-        for (let j = 0; j < N; j++) {
-          let val = 0;
-          if (distType === 'uniform') {
-            val = Math.random();
-          } else if (distType === 'skewed') {
-            val = -Math.log(1 - Math.random()) / 3; // Exponential
-          } else {
-            val = Math.random() > 0.5 ? Math.random() * 0.3 : 0.7 + Math.random() * 0.3; // Bimodal
-          }
-          sum += val;
-        }
-        cltMeans.push(sum / N);
-      }
-
-      // Update Chart Bins
-      const bins = new Array(20).fill(0);
-      cltMeans.forEach(m => {
-        const idx = Math.min(19, Math.max(0, Math.floor(m * 20)));
-        bins[idx]++;
-      });
-
-      cltChart.data.datasets[0].data = bins;
-      cltChart.update();
-
-      // Stats
-      const totalK = cltMeans.length;
-      const mean = cltMeans.reduce((a, b) => a + b, 0) / totalK;
-      const variance = cltMeans.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / totalK;
-      const se = Math.sqrt(variance);
-
-      document.getElementById('clt-total-k').innerText = totalK;
-      document.getElementById('clt-mean-val').innerText = mean.toFixed(3);
-      document.getElementById('clt-se-val').innerText = se.toFixed(3);
-    }
-
-    /* ================= COMBINATORICS & COUNTING LOGIC ================= */
-    const comboProblems = [
-      {
-        title: "Standard 52-Card Deck Shuffles",
-        desc: "How many unique permutations exist when shuffling a standard 52-card deck ($52!$)?",
-        exp: 68
-      },
-      {
-        title: "Password Entropy (8-char alphanumeric)",
-        desc: "Total combinations for an 8-character password using uppercase, lowercase, and digits ($62^8$).",
-        exp: 14
-      },
-      {
-        title: "Observable Universe Atom Count",
-        desc: "Estimated total number of elementary atoms in the observable universe.",
-        exp: 80
-      }
-    ];
-
-    function nextComboProblem() {
-      const prob = comboProblems[Math.floor(Math.random() * comboProblems.length)];
-      state.dataCombo = prob;
-
-      document.getElementById('combo-title').innerText = prob.title;
-      document.getElementById('combo-desc').innerHTML = prob.desc;
-      document.getElementById('input-combo').value = '';
-      document.getElementById('result-combo').innerText = "Estimate exponent X in 10^X.";
-      document.getElementById('result-combo').className = "p-3 rounded-lg bg-gray-900/60 border border-gray-800 text-xs text-gray-400 text-center";
-    }
-
-    function submitCombo() {
-      const est = parseInt(document.getElementById('input-combo').value, 10);
-      if (isNaN(est)) return;
-
-      const actual = state.dataCombo.exp;
-      const diff = Math.abs(est - actual);
-
-      const resBox = document.getElementById('result-combo');
-      if (diff <= 2) {
-        state.score += 100;
-        state.streak++;
-        resBox.innerHTML = `🎯 Brilliant! Exact order magnitude: <strong>10^${actual}</strong>.`;
-        resBox.className = "p-3 rounded-lg bg-pink-950/60 border border-pink-500/40 text-pink-300 text-center font-mono";
-      } else {
-        state.streak = 0;
-        resBox.innerHTML = `❌ Off by ${diff} orders. Actual: <strong>10^${actual}</strong>.`;
-        resBox.className = "p-3 rounded-lg bg-red-950/60 border border-red-500/40 text-red-300 text-center font-mono";
-      }
-      updateScoreboard();
-    }
-
-    /* ================= SCIENTIFIC CALCULATOR MODAL ================= */
-    function toggleCalcModal() {
-      const modal = document.getElementById('calc-modal');
-      modal.classList.toggle('hidden');
-    }
-
-    function calcInput(char) {
-      const disp = document.getElementById('calc-display');
-      if (disp.value === '0' || disp.value === 'Error') disp.value = '';
-
-      if (char === 'C') {
-        disp.value = '0';
-      } else if (char === 'pow') {
-        disp.value += '**';
-      } else {
-        disp.value += char;
-      }
-    }
-
-    function calcEval() {
-      const disp = document.getElementById('calc-display');
-      try {
-        disp.value = eval(disp.value);
-      } catch (e) {
-        disp.value = 'Error';
-      }
-    }
-
-    // Initialize Everything on Load
-    window.addEventListener('load', () => {
-      initStore();
-      reset1D();
-      reset2D();
-      nextFermiChallenge();
-      nextComboProblem();
-      lucide.createIcons();
-    });
-  </script>
-</body>
-</html>
+                <option value="skewed">Right-
