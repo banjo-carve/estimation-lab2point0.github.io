@@ -2,8 +2,8 @@
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estimation Science & Math Lab</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Estimation Science & Math Lab Pro</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -26,64 +26,66 @@
                             emerald: '#10b981',
                             amber: '#f59e0b',
                             rose: '#f43f5e',
-                            purple: '#a855f7'
+                            purple: '#a855f7',
+                            pink: '#ec4899'
                         }
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif']
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
                     }
                 }
             }
         }
     </script>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Three.js CDN for 3D Volume Mode -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- OrbitControls for Three.js -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <!-- Chart.js for Performance Tracking -->
+    <!-- Chart.js for Performance & Stats Visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #090d16;
+            background-color: #070a12;
             color: #f3f4f6;
-            overflow-x: hidden;
+            touch-action: manipulation;
         }
         .mono {
             font-family: 'JetBrains Mono', monospace;
         }
-        /* Custom Glassmorphism Styling */
+        /* Custom UI Glassmorphism */
         .glass-panel {
-            background: rgba(17, 24, 39, 0.7);
+            background: rgba(15, 23, 42, 0.75);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .glass-card {
-            background: rgba(31, 41, 55, 0.5);
+            background: rgba(30, 41, 59, 0.5);
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
         .glass-input {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.12);
         }
         .glass-input:focus {
             border-color: #6366f1;
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.35);
         }
         /* Custom Glowing Scrollbars */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(15, 23, 42, 0.9);
         }
         ::-webkit-scrollbar-thumb {
             background: rgba(99, 102, 241, 0.4);
@@ -92,282 +94,366 @@
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(99, 102, 241, 0.8);
         }
-        /* Range Slider Styling */
+        /* Range Input Touch Styles */
         input[type=range] {
             -webkit-appearance: none;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.12);
             border-radius: 8px;
             height: 8px;
         }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            height: 20px;
-            width: 20px;
+            height: 22px;
+            width: 22px;
             border-radius: 50%;
             background: #6366f1;
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(99, 102, 241, 0.8);
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.8);
             transition: transform 0.1s, background 0.2s;
         }
         input[type=range]::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
+            transform: scale(1.15);
             background: #818cf8;
-        }
-        /* Glowing Text FX */
-        .text-glow-cyan {
-            text-shadow: 0 0 10px rgba(6, 182, 212, 0.6);
-        }
-        .text-glow-brand {
-            text-shadow: 0 0 10px rgba(99, 102, 241, 0.6);
         }
     </style>
 </head>
 <body class="h-screen flex flex-col antialiased select-none overflow-hidden">
 
-    <!-- Top Navigation Header -->
-    <header class="h-16 border-b border-gray-800/80 glass-panel flex items-center justify-between px-4 md:px-6 z-20 shrink-0">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-neon-cyan flex items-center justify-center shadow-lg shadow-brand-500/20">
-                <i class="fa-solid to-fa-compass-drafting text-xl text-white"></i>
+    <!-- Header / Navbar -->
+    <header class="h-14 md:h-16 border-b border-gray-800/80 glass-panel flex items-center justify-between px-3 md:px-6 z-30 shrink-0">
+        <div class="flex items-center space-x-2 md:space-x-3">
+            <button onclick="toggleMobileMenu()" class="md:hidden w-9 h-9 rounded-xl bg-slate-900 border border-gray-800 flex items-center justify-center text-gray-300">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-neon-purple to-neon-cyan flex items-center justify-center shadow-lg shadow-brand-500/20">
+                <i class="fa-solid fa-chart-pie text-lg text-white"></i>
             </div>
             <div>
-                <h1 class="font-bold text-lg tracking-wide bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
-                    ESTIMATION <span class="text-brand-400 font-normal text-xs px-2 py-0.5 rounded-full bg-brand-900/50 border border-brand-500/30">PRO LAB</span>
+                <h1 class="font-extrabold text-sm md:text-base tracking-wide bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+                    ESTIMATION <span class="text-brand-400 font-normal text-[10px] md:text-xs px-2 py-0.5 rounded-full bg-brand-900/60 border border-brand-500/40">LAB PRO v2.0</span>
                 </h1>
-                <p class="text-xs text-gray-400 hidden sm:block">Interactive Multi-Dimensional Estimation Suite</p>
+                <p class="text-[10px] text-gray-400 hidden sm:block">PhET-Inspired Science, Statistics & Combinatorics Simulator</p>
             </div>
         </div>
 
-        <!-- Mode Select Tabs -->
-        <nav class="flex items-center space-x-1 md:space-x-2 bg-slate-900/80 p-1 rounded-xl border border-gray-800">
-            <button onclick="switchMode('1d')" id="tab-1d" class="nav-tab px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center space-x-1.5 text-gray-400 hover:text-white">
+        <!-- Desktop Navigation Tabs -->
+        <nav class="hidden md:flex items-center space-x-1 bg-slate-900/90 p-1 rounded-xl border border-gray-800 text-xs">
+            <button onclick="switchMode('1d')" id="tab-1d" class="nav-tab px-3 py-1.5 rounded-lg font-medium transition flex items-center space-x-1.5 text-gray-400 hover:text-white">
                 <i class="fa-solid fa-ruler-horizontal text-neon-cyan"></i>
-                <span>1D Length</span>
+                <span>1D Scale</span>
             </button>
-            <button onclick="switchMode('2d')" id="tab-2d" class="nav-tab px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center space-x-1.5 text-gray-400 hover:text-white">
+            <button onclick="switchMode('2d')" id="tab-2d" class="nav-tab px-3 py-1.5 rounded-lg font-medium transition flex items-center space-x-1.5 text-gray-400 hover:text-white">
                 <i class="fa-solid fa-shapes text-neon-emerald"></i>
                 <span>2D Area</span>
             </button>
-            <button onclick="switchMode('3d')" id="tab-3d" class="nav-tab px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center space-x-1.5 text-gray-400 hover:text-white">
+            <button onclick="switchMode('3d')" id="tab-3d" class="nav-tab px-3 py-1.5 rounded-lg font-medium transition flex items-center space-x-1.5 text-gray-400 hover:text-white">
                 <i class="fa-solid fa-cube text-neon-amber"></i>
                 <span>3D Volume</span>
             </button>
-            <button onclick="switchMode('fermi')" id="tab-fermi" class="nav-tab px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center space-x-1.5 text-gray-400 hover:text-white">
+            <button onclick="switchMode('fermi')" id="tab-fermi" class="nav-tab px-3 py-1.5 rounded-lg font-medium transition flex items-center space-x-1.5 text-gray-400 hover:text-white">
                 <i class="fa-solid fa-brain text-neon-purple"></i>
-                <span>Fermi Mode</span>
+                <span>Fermi</span>
+            </button>
+            <button onclick="switchMode('stats')" id="tab-stats" class="nav-tab px-3 py-1.5 rounded-lg font-medium transition flex items-center space-x-1.5 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-chart-line text-neon-pink"></i>
+                <span>Stats & CLT</span>
+            </button>
+            <button onclick="switchMode('combo')" id="tab-combo" class="nav-tab px-3 py-1.5 rounded-lg font-medium transition flex items-center space-x-1.5 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-network-wired text-brand-400"></i>
+                <span>Counting</span>
             </button>
         </nav>
 
-        <!-- Stats & Controls Bar -->
-        <div class="flex items-center space-x-3">
-            <div class="hidden lg:flex items-center space-x-4 px-3 py-1.5 rounded-xl bg-slate-900/60 border border-gray-800/80 text-xs">
-                <div class="flex items-center space-x-1.5">
-                    <span class="text-gray-400">Score:</span>
-                    <span id="stat-score" class="font-bold text-brand-400 mono text-sm">0</span>
-                </div>
+        <!-- Stats & Actions -->
+        <div class="flex items-center space-x-2 md:space-x-3">
+            <div class="hidden lg:flex items-center space-x-3 px-3 py-1 rounded-xl bg-slate-900/80 border border-gray-800 text-xs">
+                <div><span class="text-gray-400">Score:</span> <span id="stat-score" class="font-bold text-brand-400 mono">0</span></div>
                 <div class="h-3 w-px bg-gray-800"></div>
-                <div class="flex items-center space-x-1.5">
-                    <span class="text-gray-400">Streak:</span>
-                    <span id="stat-streak" class="font-bold text-neon-emerald mono text-sm">0 🔥</span>
-                </div>
-                <div class="h-3 w-px bg-gray-800"></div>
-                <div class="flex items-center space-x-1.5">
-                    <span class="text-gray-400">Avg Acc:</span>
-                    <span id="stat-accuracy" class="font-bold text-neon-cyan mono text-sm">--</span>
-                </div>
+                <div><span class="text-gray-400">Streak:</span> <span id="stat-streak" class="font-bold text-neon-emerald mono">0 🔥</span></div>
             </div>
 
-            <!-- Dashboard Analytics Button -->
-            <button onclick="toggleAnalyticsModal()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-gray-700 flex items-center justify-center text-gray-300 hover:text-white transition" title="View Statistics & History">
-                <i class="fa-solid fa-chart-line"></i>
+            <!-- Custom Creator Modal Launch -->
+            <button onclick="toggleCustomCreatorModal()" class="px-2.5 py-1.5 rounded-xl bg-brand-600/20 hover:bg-brand-600/30 text-brand-300 border border-brand-500/30 text-xs font-semibold flex items-center space-x-1.5 transition">
+                <i class="fa-solid fa-plus"></i>
+                <span class="hidden sm:inline">Create Challenge</span>
             </button>
-            <!-- Settings Toggle Button -->
-            <button onclick="toggleSettingsModal()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-gray-700 flex items-center justify-center text-gray-300 hover:text-white transition" title="Settings">
+            
+            <!-- Scientific Calc Launcher -->
+            <button onclick="toggleCalculator()" class="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-gray-700 flex items-center justify-center text-gray-300 hover:text-white text-xs transition" title="Scientific Calculator">
+                <i class="fa-solid fa-calculator"></i>
+            </button>
+            
+            <!-- Dashboard Modal -->
+            <button onclick="toggleAnalyticsModal()" class="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-gray-700 flex items-center justify-center text-gray-300 hover:text-white text-xs transition" title="Analytics">
+                <i class="fa-solid fa-chart-column"></i>
+            </button>
+
+            <button onclick="toggleSettingsModal()" class="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-gray-700 flex items-center justify-center text-gray-300 hover:text-white text-xs transition" title="Settings">
                 <i class="fa-solid fa-gear"></i>
             </button>
         </div>
     </header>
 
-    <!-- Main Workspace Grid -->
+    <!-- Mobile Slide Drawer Nav -->
+    <div id="mobile-menu" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md md:hidden">
+        <div class="w-64 h-full glass-panel p-4 flex flex-col space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-gray-800">
+                <span class="font-bold text-sm text-gray-200">Simulation Modes</span>
+                <button onclick="toggleMobileMenu()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex flex-col space-y-2 text-sm">
+                <button onclick="switchMode('1d'); toggleMobileMenu()" class="px-3 py-2 rounded-lg bg-slate-900 text-left flex items-center space-x-2 text-gray-300"><i class="fa-solid fa-ruler-horizontal text-neon-cyan"></i> <span>1D Length</span></button>
+                <button onclick="switchMode('2d'); toggleMobileMenu()" class="px-3 py-2 rounded-lg bg-slate-900 text-left flex items-center space-x-2 text-gray-300"><i class="fa-solid fa-shapes text-neon-emerald"></i> <span>2D Area</span></button>
+                <button onclick="switchMode('3d'); toggleMobileMenu()" class="px-3 py-2 rounded-lg bg-slate-900 text-left flex items-center space-x-2 text-gray-300"><i class="fa-solid fa-cube text-neon-amber"></i> <span>3D Volume</span></button>
+                <button onclick="switchMode('fermi'); toggleMobileMenu()" class="px-3 py-2 rounded-lg bg-slate-900 text-left flex items-center space-x-2 text-gray-300"><i class="fa-solid fa-brain text-neon-purple"></i> <span>Fermi Solver</span></button>
+                <button onclick="switchMode('stats'); toggleMobileMenu()" class="px-3 py-2 rounded-lg bg-slate-900 text-left flex items-center space-x-2 text-gray-300"><i class="fa-solid fa-chart-line text-neon-pink"></i> <span>Stats & CLT</span></button>
+                <button onclick="switchMode('combo'); toggleMobileMenu()" class="px-3 py-2 rounded-lg bg-slate-900 text-left flex items-center space-x-2 text-gray-300"><i class="fa-solid fa-network-wired text-brand-400"></i> <span>Combinatorics</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Workspace -->
     <main class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
 
-        <!-- Left Interactive Workbench / Canvas -->
-        <section class="flex-1 flex flex-col relative bg-slate-950/60 overflow-hidden">
+        <!-- Interactive Canvas Viewport -->
+        <section class="flex-1 flex flex-col relative bg-slate-950/70 overflow-hidden">
             
-            <!-- Canvas HUD Overlay (Top Info Bar) -->
-            <div class="absolute top-4 left-4 right-4 z-10 flex justify-between items-center pointer-events-none">
-                <div class="glass-panel px-4 py-2 rounded-xl flex items-center space-x-3 pointer-events-auto border border-gray-700/50">
-                    <span id="hud-level-badge" class="px-2 py-0.5 rounded bg-brand-500/20 text-brand-400 text-xs font-semibold uppercase border border-brand-500/30">Level 1</span>
-                    <h2 id="hud-title" class="text-sm font-semibold text-gray-200">Length Estimation</h2>
+            <!-- Canvas HUD -->
+            <div class="absolute top-3 left-3 right-3 z-10 flex justify-between items-center pointer-events-none">
+                <div class="glass-panel px-3 py-1.5 rounded-xl flex items-center space-x-2 pointer-events-auto border border-gray-700/50">
+                    <span id="hud-level-badge" class="px-2 py-0.5 rounded bg-brand-500/20 text-brand-400 text-[10px] md:text-xs font-semibold uppercase border border-brand-500/30">Level 1</span>
+                    <h2 id="hud-title" class="text-xs md:text-sm font-semibold text-gray-200">1D Length Estimation</h2>
                 </div>
 
-                <!-- Timer & Hint Widget -->
                 <div class="flex items-center space-x-2 pointer-events-auto">
-                    <div id="timer-box" class="hidden glass-panel px-3 py-1.5 rounded-xl border border-gray-700/50 text-xs mono text-neon-amber font-semibold items-center space-x-1.5">
-                        <i class="fa-regular fa-clock"></i>
+                    <div id="timer-box" class="hidden glass-panel px-2.5 py-1 rounded-xl border border-gray-700/50 text-xs mono text-neon-amber font-semibold items-center space-x-1">
+                        <i class="fa-regular fa-clock text-xs"></i>
                         <span id="timer-val">00:30</span>
                     </div>
 
-                    <button onclick="toggleHint()" class="glass-panel px-3 py-1.5 rounded-xl border border-gray-700/50 text-xs font-medium text-gray-300 hover:text-white hover:border-brand-500/50 transition flex items-center space-x-1.5">
+                    <button onclick="toggleHint()" class="glass-panel px-2.5 py-1 rounded-xl border border-gray-700/50 text-xs font-medium text-gray-300 hover:text-white transition flex items-center space-x-1">
                         <i class="fa-regular fa-lightbulb text-yellow-400"></i>
-                        <span class="hidden sm:inline">Visual Hint</span>
+                        <span class="hidden sm:inline">Hint</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Viewport Canvas Container -->
+            <!-- Simulation Viewports -->
             <div id="canvas-container" class="w-full h-full relative flex items-center justify-center">
-                <!-- 2D Canvas for 1D / 2D Modes -->
+                <!-- 2D Canvas for 1D, 2D, Stats, Combo -->
                 <canvas id="sim-canvas" class="w-full h-full block cursor-crosshair"></canvas>
                 
-                <!-- 3D Viewport Container for Three.js -->
+                <!-- Three.js 3D Viewport -->
                 <div id="three-viewport" class="w-full h-full absolute inset-0 hidden"></div>
 
-                <!-- Fermi Estimation Container (Dynamic HTML) -->
-                <div id="fermi-viewport" class="w-full h-full absolute inset-0 p-6 hidden overflow-y-auto flex flex-col items-center justify-center">
-                    <!-- Dynamic Content Inserted Here -->
-                </div>
+                <!-- HTML Viewport for Fermi Problems -->
+                <div id="fermi-viewport" class="w-full h-full absolute inset-0 p-4 md:p-6 hidden overflow-y-auto flex flex-col items-center justify-center"></div>
             </div>
 
-            <!-- Visual Hint Overlay Window -->
-            <div id="hint-overlay" class="hidden absolute bottom-20 left-4 right-4 md:left-6 md:w-96 glass-panel p-4 rounded-xl border border-yellow-500/30 z-20 text-xs text-gray-300 space-y-2">
+            <!-- Floating Visual Hint Window -->
+            <div id="hint-overlay" class="hidden absolute bottom-4 left-4 right-4 md:left-6 md:w-80 glass-panel p-3.5 rounded-xl border border-yellow-500/30 z-20 text-xs text-gray-300 space-y-1.5">
                 <div class="flex justify-between items-center text-yellow-400 font-semibold">
                     <span><i class="fa-solid fa-lightbulb mr-1"></i> Hint Assist</span>
                     <button onclick="toggleHint()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-                <p id="hint-text">Compare the reference unit item against the target length. Try visualizing key subdivisions like 1/2 or 1/4 marks!</p>
+                <p id="hint-text">Compare the reference unit segment against the overall target span.</p>
             </div>
         </section>
 
-        <!-- Right Control Panel & Estimation Inputs -->
-        <aside class="w-full md:w-80 lg:w-96 border-t md:border-t-0 md:border-l border-gray-800/80 glass-panel flex flex-col shrink-0 z-10">
-            <div class="p-4 border-b border-gray-800/80 flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Input & Validation</span>
-                <span id="unit-indicator" class="text-xs px-2 py-0.5 rounded bg-slate-800 text-brand-300 border border-gray-700">Units: Segment</span>
+        <!-- Right / Bottom Control Panel -->
+        <aside class="w-full md:w-80 lg:w-96 border-t md:border-t-0 md:border-l border-gray-800/80 glass-panel flex flex-col shrink-0 z-20 max-h-[50vh] md:max-h-none overflow-y-auto">
+            <div class="p-3 md:p-4 border-b border-gray-800/80 flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Estimation Input</span>
+                <span id="unit-indicator" class="text-[10px] md:text-xs px-2 py-0.5 rounded bg-slate-800 text-brand-300 border border-gray-700">Units: Segment</span>
             </div>
 
-            <div class="p-6 flex-1 flex flex-col justify-between space-y-6 overflow-y-auto">
-                <!-- Unit Reference Specifier -->
-                <div class="glass-card p-4 rounded-xl border border-gray-800 space-y-3">
+            <div class="p-4 md:p-6 flex-1 flex flex-col justify-between space-y-4 md:space-y-6">
+                <!-- Unit Preview Card -->
+                <div class="glass-card p-3 rounded-xl border border-gray-800 space-y-2">
                     <div class="flex items-center justify-between text-xs text-gray-400">
-                        <span>Unit Sample Size</span>
+                        <span>Unit Sample</span>
                         <span id="sample-shape-name" class="text-gray-200 font-semibold">1 Unit Line</span>
                     </div>
-                    <div id="unit-preview-box" class="h-16 bg-slate-900/80 rounded-lg border border-gray-800/80 flex items-center justify-center relative overflow-hidden">
-                        <!-- Canvas or Mini Visual for Reference -->
+                    <div id="unit-preview-box" class="h-12 bg-slate-900/80 rounded-lg border border-gray-800/80 flex items-center justify-center relative overflow-hidden">
                         <div id="unit-sample-graphic" class="flex items-center justify-center"></div>
                     </div>
                 </div>
 
-                <!-- User Estimation Input Area -->
-                <div class="space-y-4">
+                <!-- Input Controls -->
+                <div class="space-y-3">
                     <div class="flex justify-between items-baseline">
-                        <label class="text-sm font-medium text-gray-300">Your Estimate</label>
-                        <span id="estimate-display-val" class="mono text-2xl font-extrabold text-brand-400">10</span>
+                        <label class="text-xs md:text-sm font-medium text-gray-300">Your Estimate</label>
+                        <span id="estimate-display-val" class="mono text-xl md:text-2xl font-extrabold text-brand-400">10</span>
                     </div>
 
-                    <!-- Slider Control -->
                     <input type="range" id="estimate-slider" min="1" max="100" value="10" class="w-full accent-brand-500 cursor-pointer">
 
-                    <!-- Direct Number Input & Quick Buttons -->
                     <div class="flex space-x-2">
-                        <input type="number" id="estimate-number-input" value="10" min="1" max="500" class="flex-1 glass-input px-3 py-2 rounded-xl text-center mono text-lg font-bold text-white outline-none">
-                        <button onclick="adjustEstimate(-1)" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-gray-700 flex items-center justify-center text-gray-300 hover:text-white font-bold transition">-</button>
-                        <button onclick="adjustEstimate(1)" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-gray-700 flex items-center justify-center text-gray-300 hover:text-white font-bold transition">+</button>
-                    </div>
-
-                    <!-- Granularity Presets -->
-                    <div class="grid grid-cols-4 gap-2 pt-1">
-                        <button onclick="setEstimatePreset(5)" class="py-1 rounded bg-slate-900 hover:bg-slate-800 text-xs text-gray-400 hover:text-white border border-gray-800 font-mono">5</button>
-                        <button onclick="setEstimatePreset(10)" class="py-1 rounded bg-slate-900 hover:bg-slate-800 text-xs text-gray-400 hover:text-white border border-gray-800 font-mono">10</button>
-                        <button onclick="setEstimatePreset(25)" class="py-1 rounded bg-slate-900 hover:bg-slate-800 text-xs text-gray-400 hover:text-white border border-gray-800 font-mono">25</button>
-                        <button onclick="setEstimatePreset(50)" class="py-1 rounded bg-slate-900 hover:bg-slate-800 text-xs text-gray-400 hover:text-white border border-gray-800 font-mono">50</button>
+                        <input type="number" id="estimate-number-input" value="10" min="1" max="1000000000" class="flex-1 glass-input px-3 py-1.5 rounded-xl text-center mono text-base font-bold text-white outline-none">
+                        <button onclick="adjustEstimate(-1)" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-gray-700 flex items-center justify-center text-gray-300 font-bold">-</button>
+                        <button onclick="adjustEstimate(1)" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-gray-700 flex items-center justify-center text-gray-300 font-bold">+</button>
                     </div>
                 </div>
 
-                <!-- Evaluation & Result Box -->
-                <div id="result-feedback-card" class="hidden glass-card p-4 rounded-xl border border-gray-800 space-y-3">
+                <!-- Feedback Card -->
+                <div id="result-feedback-card" class="hidden glass-card p-3 md:p-4 rounded-xl border border-gray-800 space-y-2">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-semibold text-gray-400">Evaluation Result</span>
-                        <span id="feedback-badge" class="px-2 py-0.5 rounded text-xs font-bold uppercase">Great!</span>
+                        <span class="text-xs font-semibold text-gray-400">Validation Result</span>
+                        <span id="feedback-badge" class="px-2 py-0.5 rounded text-[10px] font-bold uppercase">Great!</span>
                     </div>
                     
-                    <div class="grid grid-cols-3 gap-2 text-center py-2 bg-slate-950/40 rounded-lg border border-gray-800">
+                    <div class="grid grid-cols-3 gap-1.5 text-center py-1.5 bg-slate-950/50 rounded-lg border border-gray-800">
                         <div>
-                            <div class="text-[10px] text-gray-400">Actual</div>
-                            <div id="val-actual" class="mono font-bold text-gray-200">12</div>
+                            <div class="text-[9px] text-gray-400">Actual</div>
+                            <div id="val-actual" class="mono text-xs font-bold text-gray-200">12</div>
                         </div>
                         <div>
-                            <div class="text-[10px] text-gray-400">Estimate</div>
-                            <div id="val-estimated" class="mono font-bold text-brand-400">10</div>
+                            <div class="text-[9px] text-gray-400">Estimate</div>
+                            <div id="val-estimated" class="mono text-xs font-bold text-brand-400">10</div>
                         </div>
                         <div>
-                            <div class="text-[10px] text-gray-400">Precision</div>
-                            <div id="val-accuracy" class="mono font-bold text-neon-emerald">83%</div>
+                            <div class="text-[9px] text-gray-400">Precision</div>
+                            <div id="val-accuracy" class="mono text-xs font-bold text-neon-emerald">83%</div>
                         </div>
                     </div>
 
-                    <p id="feedback-explanation" class="text-xs text-gray-300 italic text-center">Your estimate was within 17% of the exact calculation.</p>
+                    <p id="feedback-explanation" class="text-[11px] text-gray-300 italic text-center leading-tight">Estimate evaluated successfully.</p>
                 </div>
 
-                <!-- Action Button Cluster -->
-                <div class="space-y-3">
-                    <button id="btn-check" onclick="checkEstimate()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white font-bold shadow-lg shadow-brand-600/30 hover:shadow-brand-500/50 transition duration-200 flex items-center justify-center space-x-2">
+                <!-- Action Buttons -->
+                <div class="space-y-2 pt-2">
+                    <button id="btn-check" onclick="checkEstimate()" class="w-full py-3 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white font-bold text-xs md:text-sm shadow-lg shadow-brand-600/30 transition flex items-center justify-center space-x-2">
                         <i class="fa-solid fa-check-double"></i>
                         <span>Check Estimate</span>
                     </button>
 
-                    <button id="btn-next" onclick="nextLevel()" class="hidden w-full py-3.5 rounded-xl bg-gradient-to-r from-neon-emerald to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold shadow-lg shadow-emerald-500/30 transition duration-200 flex items-center justify-center space-x-2">
+                    <button id="btn-next" onclick="nextLevel()" class="hidden w-full py-3 rounded-xl bg-gradient-to-r from-neon-emerald to-emerald-600 text-white font-bold text-xs md:text-sm shadow-lg shadow-emerald-500/30 transition flex items-center justify-center space-x-2">
                         <span>Next Challenge</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
 
-                    <button onclick="resetCurrentChallenge()" class="w-full py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-medium text-gray-400 hover:text-gray-200 border border-gray-800 transition flex items-center justify-center space-x-1.5">
+                    <button onclick="resetCurrentChallenge()" class="w-full py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs text-gray-400 border border-gray-800 transition flex items-center justify-center space-x-1.5">
                         <i class="fa-solid fa-rotate-right"></i>
-                        <span>New Random Challenge</span>
+                        <span>New Challenge</span>
                     </button>
                 </div>
             </div>
         </aside>
     </main>
 
+    <!-- Scientific Calculator Drawer Widget -->
+    <div id="calc-drawer" class="hidden fixed bottom-4 right-4 z-50 glass-panel w-72 p-4 rounded-2xl border border-gray-700 shadow-2xl space-y-3">
+        <div class="flex items-center justify-between text-xs text-gray-300 font-bold">
+            <span><i class="fa-solid fa-calculator text-brand-400 mr-1.5"></i> Math Helper</span>
+            <button onclick="toggleCalculator()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <input type="text" id="calc-screen" readonly class="w-full glass-input px-3 py-2 rounded-xl text-right mono text-lg font-bold text-neon-cyan outline-none" value="0">
+        <div class="grid grid-cols-4 gap-1.5 text-xs font-mono">
+            <button onclick="calcPress('C')" class="p-2 bg-slate-800 rounded-lg text-rose-400 font-bold">C</button>
+            <button onclick="calcPress('(')" class="p-2 bg-slate-800 rounded-lg text-gray-300">(</button>
+            <button onclick="calcPress(')')" class="p-2 bg-slate-800 rounded-lg text-gray-300">)</button>
+            <button onclick="calcPress('/')" class="p-2 bg-slate-800 rounded-lg text-brand-400 font-bold">÷</button>
+            
+            <button onclick="calcPress('7')" class="p-2 bg-slate-900 rounded-lg text-white">7</button>
+            <button onclick="calcPress('8')" class="p-2 bg-slate-900 rounded-lg text-white">8</button>
+            <button onclick="calcPress('9')" class="p-2 bg-slate-900 rounded-lg text-white">9</button>
+            <button onclick="calcPress('*')" class="p-2 bg-slate-800 rounded-lg text-brand-400 font-bold">×</button>
+            
+            <button onclick="calcPress('4')" class="p-2 bg-slate-900 rounded-lg text-white">4</button>
+            <button onclick="calcPress('5')" class="p-2 bg-slate-900 rounded-lg text-white">5</button>
+            <button onclick="calcPress('6')" class="p-2 bg-slate-900 rounded-lg text-white">6</button>
+            <button onclick="calcPress('-')" class="p-2 bg-slate-800 rounded-lg text-brand-400 font-bold">-</button>
+            
+            <button onclick="calcPress('1')" class="p-2 bg-slate-900 rounded-lg text-white">1</button>
+            <button onclick="calcPress('2')" class="p-2 bg-slate-900 rounded-lg text-white">2</button>
+            <button onclick="calcPress('3')" class="p-2 bg-slate-900 rounded-lg text-white">3</button>
+            <button onclick="calcPress('+')" class="p-2 bg-slate-800 rounded-lg text-brand-400 font-bold">+</button>
+            
+            <button onclick="calcPress('0')" class="p-2 bg-slate-900 rounded-lg text-white">0</button>
+            <button onclick="calcPress('.')" class="p-2 bg-slate-900 rounded-lg text-white">.</button>
+            <button onclick="calcPress('^')" class="p-2 bg-slate-800 rounded-lg text-brand-400">x^y</button>
+            <button onclick="calcEval()" class="p-2 bg-brand-600 rounded-lg text-white font-bold">=</button>
+        </div>
+    </div>
+
+    <!-- Custom Challenge Creator Modal -->
+    <div id="modal-creator" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-lg rounded-2xl border border-gray-800 overflow-hidden flex flex-col">
+            <div class="p-4 border-b border-gray-800 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-brand-400"></i>
+                    <h3 class="font-bold text-gray-100 text-sm">Custom Challenge Creator</h3>
+                </div>
+                <button onclick="toggleCustomCreatorModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-5 space-y-4 text-xs">
+                <div class="space-y-1">
+                    <label class="text-gray-300 font-semibold">Challenge Target Mode</label>
+                    <select id="creator-mode" class="w-full glass-input px-3 py-2 rounded-xl text-gray-200 outline-none">
+                        <option value="1d">1D Length Target</option>
+                        <option value="2d">2D Area Grid</option>
+                        <option value="3d">3D Volume Cubes</option>
+                        <option value="combo">Combinatorial Space (nCr / nPr)</option>
+                    </select>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-gray-300 font-semibold">Custom Challenge Title / Context</label>
+                    <input type="text" id="creator-title" placeholder="e.g. Estimate Solar Panel Coverage" class="w-full glass-input px-3 py-2 rounded-xl text-gray-200 outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-1">
+                        <label class="text-gray-300 font-semibold">Target Quantity / Solution</label>
+                        <input type="number" id="creator-target" value="42" class="w-full glass-input px-3 py-2 rounded-xl text-gray-200 outline-none mono">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-gray-300 font-semibold">Unit Label</label>
+                        <input type="text" id="creator-unit" value="panels" class="w-full glass-input px-3 py-2 rounded-xl text-gray-200 outline-none">
+                    </div>
+                </div>
+
+                <button onclick="applyCustomChallenge()" class="w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold transition">Launch Custom Challenge</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Analytics Dashboard Modal -->
     <div id="modal-analytics" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
         <div class="glass-panel w-full max-w-2xl rounded-2xl border border-gray-800 overflow-hidden flex flex-col max-h-[90vh]">
-            <div class="p-5 border-b border-gray-800 flex items-center justify-between">
+            <div class="p-4 border-b border-gray-800 flex items-center justify-between">
                 <div class="flex items-center space-x-2">
                     <i class="fa-solid fa-chart-line text-brand-400"></i>
-                    <h3 class="font-bold text-gray-100">Performance Analytics & History</h3>
+                    <h3 class="font-bold text-gray-100 text-sm">Performance & Error Distribution Analytics</h3>
                 </div>
-                <button onclick="toggleAnalyticsModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <button onclick="toggleAnalyticsModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <div class="p-6 space-y-6 overflow-y-auto">
-                <!-- Accuracy History Chart -->
+            <div class="p-5 space-y-5 overflow-y-auto">
                 <div class="glass-card p-4 rounded-xl border border-gray-800">
-                    <h4 class="text-xs font-semibold text-gray-400 mb-3">Estimation Accuracy Progress (%)</h4>
-                    <div class="h-48">
+                    <h4 class="text-xs font-semibold text-gray-400 mb-2">Estimation Accuracy Trend (%)</h4>
+                    <div class="h-44">
                         <canvas id="accuracyChart"></canvas>
                     </div>
                 </div>
 
-                <!-- Detailed Breakdown -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center text-xs">
                     <div class="glass-card p-3 rounded-xl">
-                        <div class="text-[10px] text-gray-400 uppercase">Total Rounds</div>
-                        <div id="modal-stat-rounds" class="mono text-xl font-bold text-gray-200">0</div>
+                        <div class="text-[10px] text-gray-400 uppercase">Rounds</div>
+                        <div id="modal-stat-rounds" class="mono text-lg font-bold text-gray-200">0</div>
                     </div>
                     <div class="glass-card p-3 rounded-xl">
                         <div class="text-[10px] text-gray-400 uppercase">Best Precision</div>
-                        <div id="modal-stat-best" class="mono text-xl font-bold text-neon-emerald">0%</div>
+                        <div id="modal-stat-best" class="mono text-lg font-bold text-neon-emerald">0%</div>
                     </div>
                     <div class="glass-card p-3 rounded-xl">
-                        <div class="text-[10px] text-gray-400 uppercase">Bullseyes (Exact)</div>
-                        <div id="modal-stat-bullseyes" class="mono text-xl font-bold text-neon-cyan">0</div>
+                        <div class="text-[10px] text-gray-400 uppercase">Bullseyes</div>
+                        <div id="modal-stat-bullseyes" class="mono text-lg font-bold text-neon-cyan">0</div>
                     </div>
                     <div class="glass-card p-3 rounded-xl">
                         <div class="text-[10px] text-gray-400 uppercase">Avg Error Rate</div>
-                        <div id="modal-stat-error" class="mono text-xl font-bold text-neon-amber">0%</div>
+                        <div id="modal-stat-error" class="mono text-lg font-bold text-neon-amber">0%</div>
                     </div>
                 </div>
             </div>
@@ -377,127 +463,115 @@
     <!-- Settings Modal -->
     <div id="modal-settings" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
         <div class="glass-panel w-full max-w-md rounded-2xl border border-gray-800 overflow-hidden flex flex-col">
-            <div class="p-5 border-b border-gray-800 flex items-center justify-between">
+            <div class="p-4 border-b border-gray-800 flex items-center justify-between">
                 <div class="flex items-center space-x-2">
                     <i class="fa-solid fa-sliders text-brand-400"></i>
-                    <h3 class="font-bold text-gray-100">Lab Settings & Difficulty</h3>
+                    <h3 class="font-bold text-gray-100 text-sm">Lab Configuration</h3>
                 </div>
-                <button onclick="toggleSettingsModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <button onclick="toggleSettingsModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <div class="p-6 space-y-5">
-                <!-- Difficulty Setting -->
-                <div class="space-y-2">
-                    <label class="text-xs font-semibold text-gray-300">Difficulty Scale</label>
-                    <select id="setting-difficulty" class="w-full glass-input px-3 py-2 rounded-xl text-sm text-gray-200 outline-none">
-                        <option value="easy">Easy (Smaller Quantities, Simple Shapes)</option>
+            <div class="p-5 space-y-4 text-xs">
+                <div class="space-y-1">
+                    <label class="text-gray-300 font-semibold">Difficulty Preset</label>
+                    <select id="setting-difficulty" class="w-full glass-input px-3 py-2 rounded-xl text-gray-200 outline-none">
+                        <option value="easy">Easy (Smaller Quantities)</option>
                         <option value="medium" selected>Medium (Standard Range)</option>
-                        <option value="hard">Hard (Large Quantities, Irregular Shapes)</option>
+                        <option value="hard">Hard (Large Quantities & Combinatorics)</option>
                     </select>
                 </div>
 
-                <!-- Tolerance Margin -->
-                <div class="space-y-2">
-                    <div class="flex justify-between text-xs">
-                        <span class="font-semibold text-gray-300">Tolerance Margin for 'Success'</span>
+                <div class="space-y-1">
+                    <div class="flex justify-between">
+                        <span class="text-gray-300 font-semibold">Tolerance Margin for 'Bullseye'</span>
                         <span id="tolerance-val" class="mono text-brand-400 font-bold">15%</span>
                     </div>
                     <input type="range" id="setting-tolerance" min="5" max="30" value="15" class="w-full">
                 </div>
 
-                <!-- Timer Toggle -->
                 <div class="flex items-center justify-between pt-2 border-t border-gray-800">
                     <div>
-                        <div class="text-sm font-semibold text-gray-200">Timed Trial Mode</div>
-                        <div class="text-xs text-gray-400">Adds a 30s countdown to each attempt</div>
+                        <div class="font-semibold text-gray-200">Timed Trial Mode</div>
+                        <div class="text-[10px] text-gray-400">Adds 30s countdown to challenges</div>
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="setting-timer" class="sr-only peer">
-                        <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
+                        <div class="w-9 h-5 bg-slate-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-600"></div>
                     </label>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript Logic & Physics Engine -->
+    <!-- Application Script -->
     <script>
-        /* Global Application State */
+        /* Global App State */
         const state = {
-            mode: '1d', // '1d', '2d', '3d', 'fermi'
+            mode: '1d', // '1d', '2d', '3d', 'fermi', 'stats', 'combo'
             score: 0,
             streak: 0,
             level: 1,
             history: [],
             
-            // Settings
             difficulty: 'medium',
             tolerance: 0.15,
             timerEnabled: false,
             timerSeconds: 30,
             timerInterval: null,
 
-            // Active Challenge State
             targetValue: 0,
             userEstimate: 10,
             isChecked: false,
-            unitType: 'segment', // 'segment', 'square', 'circle', 'cube', 'sphere'
 
-            // Mode 1D specifics
+            // Specific Mode Properties
             lineTargetLength: 0,
             lineUnitLength: 0,
-
-            // Mode 2D specifics
-            shapeType: 'rectangle',
             gridWidth: 0,
             gridHeight: 0,
-
-            // Mode 3D specifics
-            container3DType: 'box',
             containerDim: { w: 0, h: 0, d: 0 },
 
-            // Mode Fermi specifics
-            fermiIndex: 0,
-            fermiValues: {}
+            // Stats Engine
+            statsSamples: [],
+            sampleMean: 0,
+            populationMean: 50,
+            sampleSize: 30,
+
+            // Combo Engine
+            nVal: 10,
+            rVal: 3,
+            comboType: 'nCr',
+
+            // Custom Challenge Overrides
+            isCustom: false,
+            customUnitLabel: 'Units'
         };
 
-        // Canvas & 3D Render Instances
+        // Render Instances
         let canvas, ctx;
         let scene, camera, renderer, orbitControls, containerGroup, objectsGroup;
         let chartInstance = null;
 
-        // Fermi Problems Database
         const fermiProblems = [
             {
                 title: "Ping Pong Balls in a Bus",
-                question: "Estimate how many standard ping-pong balls (40mm diameter) would completely fill a standard school bus.",
+                question: "Estimate how many standard ping-pong balls fit in a school bus.",
                 steps: [
-                    { id: 'bus_vol', label: 'School Bus Volume (m³)', min: 10, max: 100, default: 40, unit: 'm³' },
-                    { id: 'ball_vol', label: 'Ping-Pong Ball Volume (cm³)', min: 10, max: 100, default: 33, unit: 'cm³' },
-                    { id: 'packing', label: 'Sphere Packing Efficiency', min: 0.4, max: 0.8, default: 0.64, unit: 'ratio' }
+                    { id: 'bus_vol', label: 'Bus Volume (m³)', min: 10, max: 100, default: 40, unit: 'm³' },
+                    { id: 'ball_vol', label: 'Ball Volume (cm³)', min: 10, max: 100, default: 33, unit: 'cm³' },
+                    { id: 'packing', label: 'Sphere Packing Ratio', min: 0.4, max: 0.8, default: 0.64, unit: 'ratio' }
                 ],
                 calculate: (s) => Math.round((s.bus_vol * 1000000 / s.ball_vol) * s.packing),
-                hint: "A bus is roughly 10m long, 2.5m wide, and 2m tall. Spheres leave small gaps when packed (~64% efficiency)."
+                hint: "A bus is ~10m x 2.5m x 2m. Spheres leave small gaps (~64% efficiency)."
             },
             {
-                title: "Water Drops in an Olympic Swimming Pool",
-                question: "Estimate how many individual drops of water make up a full Olympic-sized swimming pool.",
+                title: "Heartbeats in a Lifetime",
+                question: "Estimate how many heartbeats occur in an 80-year lifetime.",
                 steps: [
-                    { id: 'pool_vol', label: 'Pool Volume (Liters)', min: 1000000, max: 5000000, default: 2500000, unit: 'L' },
-                    { id: 'drop_vol', label: 'Volume per Drop (mL)', min: 0.01, max: 0.1, default: 0.05, unit: 'mL' }
-                ],
-                calculate: (s) => Math.round((s.pool_vol * 1000) / s.drop_vol),
-                hint: "An Olympic pool holds 2.5 million liters of water. 1 mL contains roughly 20 standard water drops."
-            },
-            {
-                title: "Heartbeats in a Human Lifetime",
-                question: "Estimate how many times an average human heart beats over an entire lifetime of 80 years.",
-                steps: [
-                    { id: 'bpm', label: 'Average Heart Rate (BPM)', min: 50, max: 100, default: 70, unit: 'bpm' },
-                    { id: 'years', label: 'Lifespan (Years)', min: 60, max: 100, default: 80, unit: 'years' }
+                    { id: 'bpm', label: 'Average BPM', min: 50, max: 100, default: 70, unit: 'bpm' },
+                    { id: 'years', label: 'Lifespan', min: 60, max: 100, default: 80, unit: 'years' }
                 ],
                 calculate: (s) => Math.round(s.bpm * 60 * 24 * 365.25 * s.years),
-                hint: "Calculate beats per minute -> hour -> day -> year -> lifetime!"
+                hint: "Calculate BPM -> hour -> day -> year -> lifetime!"
             }
         ];
 
@@ -510,7 +584,6 @@
             switchMode('1d');
         };
 
-        /* 2D Canvas Initialization */
         function initCanvas() {
             canvas = document.getElementById('sim-canvas');
             ctx = canvas.getContext('2d');
@@ -523,17 +596,13 @@
             if (!container) return;
             canvas.width = container.clientWidth;
             canvas.height = container.clientHeight;
-            if (state.mode === '1d' || state.mode === '2d') {
-                render();
-            }
+            if (['1d', '2d', 'stats', 'combo'].includes(state.mode)) render();
         }
 
-        /* Three.js Initialization */
         function initThreeJS() {
             const viewport = document.getElementById('three-viewport');
-            
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x090d16);
+            scene.background = new THREE.Color(0x070a12);
 
             camera = new THREE.PerspectiveCamera(45, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
             camera.position.set(12, 12, 18);
@@ -541,32 +610,22 @@
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(viewport.clientWidth, viewport.clientHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.shadowMap.enabled = true;
             viewport.appendChild(renderer.domElement);
 
             orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
             orbitControls.enableDamping = true;
-            orbitControls.dampingFactor = 0.05;
 
-            // Lighting Setup
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
             scene.add(ambientLight);
-
             const dirLight = new THREE.DirectionalLight(0x6366f1, 0.8);
             dirLight.position.set(15, 20, 15);
-            dirLight.castShadow = true;
             scene.add(dirLight);
-
-            const pointLight = new THREE.PointLight(0x06b6d4, 0.6);
-            pointLight.position.set(-10, -10, -10);
-            scene.add(pointLight);
 
             containerGroup = new THREE.Group();
             objectsGroup = new THREE.Group();
             scene.add(containerGroup);
             scene.add(objectsGroup);
 
-            // Animation Loop
             function animate3D() {
                 requestAnimationFrame(animate3D);
                 if (state.mode === '3d') {
@@ -577,11 +636,10 @@
             animate3D();
         }
 
-        /* Mode Switcher */
+        /* Navigation Mode Switcher */
         function switchMode(newMode) {
             state.mode = newMode;
 
-            // Update Tab Active UI
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('bg-brand-600', 'text-white', 'shadow-lg');
                 tab.classList.add('text-gray-400');
@@ -592,7 +650,6 @@
                 activeTab.classList.remove('text-gray-400');
             }
 
-            // Hide/Show Viewports
             const canvasEl = document.getElementById('sim-canvas');
             const threeEl = document.getElementById('three-viewport');
             const fermiEl = document.getElementById('fermi-viewport');
@@ -606,42 +663,76 @@
 
             if (newMode === '1d') {
                 canvasEl.classList.remove('hidden');
-                hudTitle.innerText = "1D Segment Length Estimation";
+                hudTitle.innerText = "1D Segment Fitting";
                 unitIndicator.innerText = "Units: Line Segment";
             } else if (newMode === '2d') {
                 canvasEl.classList.remove('hidden');
-                hudTitle.innerText = "2D Area Coverage Estimation";
-                unitIndicator.innerText = "Units: Square Grid";
+                hudTitle.innerText = "2D Area Tiling";
+                unitIndicator.innerText = "Units: Grid Square";
             } else if (newMode === '3d') {
                 threeEl.classList.remove('hidden');
-                hudTitle.innerText = "3D Volume Packing Estimation";
-                unitIndicator.innerText = "Units: 3D Cubes";
+                hudTitle.innerText = "3D Volume Packing";
+                unitIndicator.innerText = "Units: Cubes";
                 onThreeWindowResize();
             } else if (newMode === 'fermi') {
                 fermiEl.classList.remove('hidden');
-                hudTitle.innerText = "Fermi Order-of-Magnitude Challenge";
-                unitIndicator.innerText = "Units: Calculated Formula";
+                hudTitle.innerText = "Fermi Order of Magnitude";
+                unitIndicator.innerText = "Units: Calculated Factor";
                 renderFermiMode();
+            } else if (newMode === 'stats') {
+                canvasEl.classList.remove('hidden');
+                hudTitle.innerText = "Monte Carlo & CLT Simulator";
+                unitIndicator.innerText = "Units: Population Mean";
+            } else if (newMode === 'combo') {
+                canvasEl.classList.remove('hidden');
+                hudTitle.innerText = "Combinatorial Space Estimator";
+                unitIndicator.innerText = "Units: Outcomes (nCr / nPr)";
             }
 
             resetCurrentChallenge();
         }
 
-        /* Challenge Generator */
+        /* Reset & Challenge Generators */
         function resetCurrentChallenge() {
             state.isChecked = false;
             document.getElementById('result-feedback-card').classList.add('hidden');
             document.getElementById('btn-check').classList.remove('hidden');
             document.getElementById('btn-next').classList.add('hidden');
 
-            // Set up difficulty multipliers
-            let minRange = 5, maxRange = 35;
-            if (state.difficulty === 'easy') { minRange = 4; maxRange = 15; }
-            if (state.difficulty === 'hard') { minRange = 25; maxRange = 80; }
+            let minR = 5, maxR = 30;
+            if (state.difficulty === 'easy') { minR = 4; maxR = 15; }
+            if (state.difficulty === 'hard') { minR = 25; maxR = 80; }
 
-            state.targetValue = Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange;
-            
-            // Slider range update
+            state.targetValue = Math.floor(Math.random() * (maxR - minR + 1)) + minR;
+
+            if (state.mode === '1d') {
+                const margin = 80;
+                const availableW = canvas.width - margin * 2;
+                state.lineUnitLength = Math.max(12, Math.floor(availableW / (state.targetValue + 4)));
+                state.lineTargetLength = state.lineUnitLength * state.targetValue;
+                document.getElementById('hint-text').innerText = "Visual Hint: Subdivide length into quarters or halves mentally.";
+            } else if (state.mode === '2d') {
+                let cols = Math.ceil(Math.sqrt(state.targetValue));
+                let rows = Math.ceil(state.targetValue / cols);
+                state.gridWidth = cols;
+                state.gridHeight = rows;
+                state.targetValue = cols * rows;
+                document.getElementById('hint-text').innerText = "Visual Hint: Multiply target Width × Height grid tiles.";
+            } else if (state.mode === '3d') {
+                generate3DChallenge();
+            } else if (state.mode === 'stats') {
+                state.populationMean = Math.floor(Math.random() * 50) + 25;
+                state.targetValue = state.populationMean;
+                generateStatsSamples();
+                document.getElementById('hint-text').innerText = "Visual Hint: Sample means concentrate tightly around true population mean as N grows.";
+            } else if (state.mode === 'combo') {
+                state.nVal = Math.floor(Math.random() * 6) + 8; // 8..13
+                state.rVal = Math.floor(Math.random() * 3) + 2; // 2..4
+                state.comboType = Math.random() > 0.5 ? 'nCr' : 'nPr';
+                state.targetValue = state.comboType === 'nCr' ? nCr(state.nVal, state.rVal) : nPr(state.nVal, state.rVal);
+                document.getElementById('hint-text').innerText = `Visual Hint: ${state.comboType === 'nCr' ? 'Combinations ignore order: n! / (r!(n-r)!)' : 'Permutations count order: n! / (n-r)!'}`;
+            }
+
             const slider = document.getElementById('estimate-slider');
             const numInput = document.getElementById('estimate-number-input');
             slider.max = Math.max(100, state.targetValue * 2);
@@ -650,44 +741,12 @@
             state.userEstimate = parseInt(slider.value);
             updateEstimateDisplay();
 
-            if (state.mode === '1d') {
-                generate1DChallenge();
-            } else if (state.mode === '2d') {
-                generate2DChallenge();
-            } else if (state.mode === '3d') {
-                generate3DChallenge();
-            } else if (state.mode === 'fermi') {
-                generateFermiChallenge();
-            }
-
-            if (state.timerEnabled) startTimer();
             renderUnitPreview();
             render();
         }
 
-        /* Mode 1D Engine */
-        function generate1DChallenge() {
-            const margin = 100;
-            const availableWidth = canvas.width - margin * 2;
-            state.lineUnitLength = Math.max(15, Math.floor(availableWidth / (state.targetValue + 5)));
-            state.lineTargetLength = state.lineUnitLength * state.targetValue;
-            document.getElementById('hint-text').innerText = `Visual Hint: Divide the overall length mentally into halves or quarters to gauge units!`;
-        }
-
-        /* Mode 2D Engine */
-        function generate2DChallenge() {
-            // Find grid dimensions fitting targetValue
-            let cols = Math.ceil(Math.sqrt(state.targetValue));
-            let rows = Math.ceil(state.targetValue / cols);
-            state.gridWidth = cols;
-            state.gridHeight = rows;
-            state.targetValue = cols * rows; // keep neat rectangular grid for accuracy
-            document.getElementById('hint-text').innerText = `Visual Hint: Count the units along one edge and multiply (Width × Height).`;
-        }
-
-        /* Mode 3D Engine */
+        /* Mode 3D Generator */
         function generate3DChallenge() {
-            // Rebuild 3D Scene
             while(containerGroup.children.length > 0) containerGroup.remove(containerGroup.children[0]);
             while(objectsGroup.children.length > 0) objectsGroup.remove(objectsGroup.children[0]);
 
@@ -697,240 +756,300 @@
             state.targetValue = w * h * d;
             state.containerDim = { w, h, d };
 
-            // Wireframe Container Box
             const boxGeo = new THREE.BoxGeometry(w * 1.05, h * 1.05, d * 1.05);
             const wireGeo = new THREE.WireframeGeometry(boxGeo);
-            const line = new THREE.LineSegments(wireGeo, new THREE.LineBasicMaterial({ color: 0x6366f1, linewidth: 2 }));
+            const line = new THREE.LineSegments(wireGeo, new THREE.LineBasicMaterial({ color: 0x6366f1 }));
             containerGroup.add(line);
 
-            // Container Translucent Fill
-            const mat = new THREE.MeshPhongMaterial({ color: 0x4f46e5, transparent: true, opacity: 0.15, side: THREE.DoubleSide });
-            const mesh = new THREE.Mesh(boxGeo, mat);
-            containerGroup.add(mesh);
+            const mat = new THREE.MeshPhongMaterial({ color: 0x4f46e5, transparent: true, opacity: 0.15 });
+            containerGroup.add(new THREE.Mesh(boxGeo, mat));
 
-            document.getElementById('hint-text').innerText = `Visual Hint: Estimate base area (Width × Depth) and multiply by height layers!`;
+            document.getElementById('hint-text').innerText = "Visual Hint: Estimate base area (w × d) then multiply by vertical layers.";
         }
 
-        /* Reveal 3D Packed Cubes on Check */
-        function reveal3DPacking() {
-            while(objectsGroup.children.length > 0) objectsGroup.remove(objectsGroup.children[0]);
-            const { w, h, d } = state.containerDim;
-            const cubeGeo = new THREE.BoxGeometry(0.9, 0.9, 0.9);
-            const cubeMat = new THREE.MeshStandardMaterial({ color: 0x06b6d4, roughness: 0.3, metalness: 0.2 });
-
-            const startX = -w / 2 + 0.5;
-            const startY = -h / 2 + 0.5;
-            const startZ = -d / 2 + 0.5;
-
-            let count = 0;
-            for (let x = 0; x < w; x++) {
-                for (let y = 0; y < h; y++) {
-                    for (let z = 0; z < d; z++) {
-                        const cube = new THREE.Mesh(cubeGeo, cubeMat);
-                        cube.position.set(startX + x, startY + y, startZ + z);
-                        cube.scale.set(0.01, 0.01, 0.01);
-                        objectsGroup.add(cube);
-
-                        // Pop-in Animation
-                        setTimeout(() => {
-                            let s = 0.01;
-                            const anim = setInterval(() => {
-                                s += 0.2;
-                                if (s >= 1) { cube.scale.set(1, 1, 1); clearInterval(anim); }
-                                else cube.scale.set(s, s, s);
-                            }, 16);
-                        }, count * 15);
-                        count++;
-                    }
+        /* Stats Engine Samples Generator */
+        function generateStatsSamples() {
+            state.statsSamples = [];
+            for (let i = 0; i < 40; i++) {
+                let sampleSum = 0;
+                for (let j = 0; j < state.sampleSize; j++) {
+                    sampleSum += (Math.random() * 40 - 20) + state.populationMean;
                 }
+                state.statsSamples.push(sampleSum / state.sampleSize);
             }
+            state.sampleMean = Math.round(state.statsSamples.reduce((a,b)=>a+b,0) / state.statsSamples.length);
         }
 
-        /* Fermi Challenge Generator */
-        function generateFermiChallenge() {
-            state.fermiIndex = Math.floor(Math.random() * fermiProblems.length);
-            renderFermiMode();
-        }
+        /* Combinatorial Math Helpers */
+        function factorial(n) { return n <= 1 ? 1 : n * factorial(n - 1); }
+        function nCr(n, r) { return Math.round(factorial(n) / (factorial(r) * factorial(n - r))); }
+        function nPr(n, r) { return Math.round(factorial(n) / factorial(n - r)); }
 
-        function renderFermiMode() {
-            const problem = fermiProblems[state.fermiIndex];
-            const fermiEl = document.getElementById('fermi-viewport');
-            
-            // Populate initial state values
-            state.fermiValues = {};
-            problem.steps.forEach(step => {
-                state.fermiValues[step.id] = step.default;
-            });
-
-            state.targetValue = problem.calculate(state.fermiValues);
-            document.getElementById('hint-text').innerText = problem.hint;
-
-            let html = `
-                <div class="max-w-xl w-full glass-panel p-6 rounded-2xl border border-gray-800 space-y-6">
-                    <div>
-                        <span class="text-xs font-bold text-neon-purple uppercase tracking-wider">Fermi Problem #${state.fermiIndex + 1}</span>
-                        <h3 class="text-xl font-bold text-white mt-1">${problem.title}</h3>
-                        <p class="text-sm text-gray-300 mt-2">${problem.question}</p>
-                    </div>
-
-                    <div class="space-y-4 pt-2 border-t border-gray-800">
-            `;
-
-            problem.steps.forEach(step => {
-                html += `
-                    <div class="space-y-1.5">
-                        <div class="flex justify-between text-xs">
-                            <span class="text-gray-400 font-medium">${step.label}</span>
-                            <span id="fermi-val-${step.id}" class="mono font-bold text-neon-cyan">${step.default} ${step.unit}</span>
-                        </div>
-                        <input type="range" min="${step.min}" max="${step.max}" step="${(step.max - step.min) / 100}" value="${step.default}" 
-                            oninput="updateFermiStep('${step.id}', this.value, '${step.unit}')" class="w-full">
-                    </div>
-                `;
-            });
-
-            html += `
-                    </div>
-                    <div class="p-4 rounded-xl bg-slate-900/80 border border-gray-800 text-center">
-                        <div class="text-xs text-gray-400">Calculated Model Estimate</div>
-                        <div id="fermi-total-calc" class="mono text-2xl font-extrabold text-brand-400 mt-1">${state.targetValue.toLocaleString()}</div>
-                    </div>
-                </div>
-            `;
-
-            fermiEl.innerHTML = html;
-        }
-
-        function updateFermiStep(id, val, unit) {
-            state.fermiValues[id] = parseFloat(val);
-            document.getElementById(`fermi-val-${id}`).innerText = `${parseFloat(val).toLocaleString()} ${unit}`;
-            
-            const problem = fermiProblems[state.fermiIndex];
-            state.targetValue = problem.calculate(state.fermiValues);
-            document.getElementById('fermi-total-calc').innerText = state.targetValue.toLocaleString();
-        }
-
-        /* Render 2D Canvas Loop */
+        /* Main Canvas Rendering Routing */
         function render() {
-            if (state.mode === '3d' || state.mode === 'fermi') return;
-            
+            if (['3d', 'fermi'].includes(state.mode)) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            if (state.mode === '1d') {
-                render1DCanvas();
-            } else if (state.mode === '2d') {
-                render2DCanvas();
-            }
+
+            if (state.mode === '1d') render1DCanvas();
+            else if (state.mode === '2d') render2DCanvas();
+            else if (state.mode === 'stats') renderStatsCanvas();
+            else if (state.mode === 'combo') renderComboCanvas();
         }
 
         function render1DCanvas() {
             const startX = (canvas.width - state.lineTargetLength) / 2;
             const startY = canvas.height / 2;
 
-            // Target Segment Bar Background
-            ctx.shadowBlur = 15;
+            ctx.shadowBlur = 12;
             ctx.shadowColor = 'rgba(99, 102, 241, 0.4)';
             ctx.strokeStyle = '#6366f1';
-            ctx.lineWidth = 8;
-            ctx.lineCap = 'round';
-
+            ctx.lineWidth = 6;
             ctx.beginPath();
             ctx.moveTo(startX, startY);
             ctx.lineTo(startX + state.lineTargetLength, startY);
             ctx.stroke();
 
-            // End Cap Markers
             ctx.shadowBlur = 0;
             ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 3;
-            
+            ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.moveTo(startX, startY - 15);
-            ctx.lineTo(startX, startY + 15);
-            ctx.moveTo(startX + state.lineTargetLength, startY - 15);
-            ctx.lineTo(startX + state.lineTargetLength, startY + 15);
+            ctx.moveTo(startX, startY - 12); ctx.lineTo(startX, startY + 12);
+            ctx.moveTo(startX + state.lineTargetLength, startY - 12); ctx.lineTo(startX + state.lineTargetLength, startY + 12);
             ctx.stroke();
 
-            // Reveal Animation on Check
             if (state.isChecked) {
-                const unitLen = state.lineUnitLength;
+                const u = state.lineUnitLength;
                 for (let i = 0; i <= state.targetValue; i++) {
-                    const x = startX + i * unitLen;
+                    const x = startX + i * u;
                     ctx.strokeStyle = '#06b6d4';
-                    ctx.lineWidth = 2;
                     ctx.beginPath();
-                    ctx.moveTo(x, startY - 10);
-                    ctx.lineTo(x, startY + 10);
+                    ctx.moveTo(x, startY - 8); ctx.lineTo(x, startY + 8);
                     ctx.stroke();
-
-                    if (i < state.targetValue) {
-                        ctx.fillStyle = i % 2 === 0 ? 'rgba(6, 182, 212, 0.2)' : 'rgba(16, 185, 129, 0.2)';
-                        ctx.fillRect(x, startY - 4, unitLen, 8);
-                    }
                 }
             }
         }
 
         function render2DCanvas() {
-            const tileSize = Math.min(
-                (canvas.width * 0.6) / state.gridWidth,
-                (canvas.height * 0.6) / state.gridHeight
-            );
+            const tileSize = Math.min((canvas.width * 0.55) / state.gridWidth, (canvas.height * 0.55) / state.gridHeight);
             const totalW = state.gridWidth * tileSize;
             const totalH = state.gridHeight * tileSize;
             const startX = (canvas.width - totalW) / 2;
             const startY = (canvas.height - totalH) / 2;
 
-            // Target Outer Bounding Area
-            ctx.fillStyle = 'rgba(31, 41, 55, 0.6)';
+            ctx.fillStyle = 'rgba(30, 41, 59, 0.6)';
             ctx.strokeStyle = '#6366f1';
             ctx.lineWidth = 3;
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = 'rgba(99, 102, 241, 0.3)';
-
             ctx.fillRect(startX, startY, totalW, totalH);
             ctx.strokeRect(startX, startY, totalW, totalH);
-            ctx.shadowBlur = 0;
 
-            // If Checked, Fill Tile Matrix
             if (state.isChecked) {
                 for (let r = 0; r < state.gridHeight; r++) {
                     for (let c = 0; c < state.gridWidth; c++) {
-                        const x = startX + c * tileSize;
-                        const y = startY + r * tileSize;
-
                         ctx.fillStyle = (r + c) % 2 === 0 ? 'rgba(6, 182, 212, 0.4)' : 'rgba(99, 102, 241, 0.4)';
-                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-                        ctx.lineWidth = 1;
-
-                        ctx.fillRect(x + 2, y + 2, tileSize - 4, tileSize - 4);
-                        ctx.strokeRect(x + 2, y + 2, tileSize - 4, tileSize - 4);
+                        ctx.fillRect(startX + c * tileSize + 1, startY + r * tileSize + 1, tileSize - 2, tileSize - 2);
                     }
                 }
             }
         }
 
-        /* Unit Specifier Preview Rendering */
+        function renderStatsCanvas() {
+            const centerX = canvas.width / 2;
+            const startY = canvas.height - 50;
+
+            // Render Sampling Distribution Curve
+            ctx.strokeStyle = '#ec4899';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            for (let x = 50; x < canvas.width - 50; x += 5) {
+                let meanX = centerX;
+                let std = 80;
+                let y = startY - Math.exp(-0.5 * Math.pow((x - meanX) / std, 2)) * 140;
+                if (x === 50) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            // Scatter Sample Dots
+            state.statsSamples.forEach((s, idx) => {
+                let posX = centerX + (s - state.populationMean) * 6;
+                let posY = startY - (idx % 8) * 12 - 10;
+                ctx.fillStyle = '#06b6d4';
+                ctx.beginPath();
+                ctx.arc(posX, posY, 4, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            if (state.isChecked) {
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(centerX, 20); ctx.lineTo(centerX, startY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.fillStyle = '#10b981';
+                ctx.font = '12px JetBrains Mono';
+                ctx.fillText(`True μ = ${state.populationMean}`, centerX + 10, 40);
+            }
+        }
+
+        function renderComboCanvas() {
+            const startX = 60;
+            const startY = canvas.height / 2;
+            
+            ctx.fillStyle = '#f3f4f6';
+            ctx.font = '14px Inter';
+            ctx.fillText(`Combinatorial Setup: ${state.comboType} with n = ${state.nVal}, r = ${state.rVal}`, startX, 40);
+
+            // Draw Outcome Decision Tree Visual
+            let branches = Math.min(state.rVal * 3, 12);
+            for (let i = 0; i < branches; i++) {
+                let endX = canvas.width - 80;
+                let endY = 60 + i * ((canvas.height - 100) / branches);
+
+                ctx.strokeStyle = 'rgba(99, 102, 241, 0.4)';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(endX, endY);
+                ctx.stroke();
+
+                ctx.fillStyle = '#a855f7';
+                ctx.beginPath();
+                ctx.arc(endX, endY, 5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function renderFermiMode() {
+            const problem = fermiProblems[0];
+            const fermiEl = document.getElementById('fermi-viewport');
+            
+            let html = `
+                <div class="max-w-xl w-full glass-panel p-5 rounded-2xl border border-gray-800 space-y-4">
+                    <div>
+                        <span class="text-[10px] font-bold text-neon-purple uppercase">Fermi Problem</span>
+                        <h3 class="text-base font-bold text-white">${problem.title}</h3>
+                        <p class="text-xs text-gray-300 mt-1">${problem.question}</p>
+                    </div>
+                    <div class="p-3 bg-slate-900 rounded-xl border border-gray-800 text-center">
+                        <div class="text-[10px] text-gray-400">Order-of-Magnitude Formula Target</div>
+                        <div class="mono text-xl font-bold text-brand-400 mt-1">${state.targetValue.toLocaleString()}</div>
+                    </div>
+                </div>
+            `;
+            fermiEl.innerHTML = html;
+        }
+
         function renderUnitPreview() {
             const box = document.getElementById('unit-sample-graphic');
             const shapeName = document.getElementById('sample-shape-name');
 
             if (state.mode === '1d') {
-                shapeName.innerText = "1 Unit Length";
-                box.innerHTML = `<div class="w-12 h-1 bg-neon-cyan rounded-full shadow-lg shadow-neon-cyan/50"></div>`;
+                shapeName.innerText = "1 Unit Segment";
+                box.innerHTML = `<div class="w-10 h-1 bg-neon-cyan rounded-full"></div>`;
             } else if (state.mode === '2d') {
-                shapeName.innerText = "1 Unit Tile Area";
-                box.innerHTML = `<div class="w-8 h-8 rounded bg-brand-500/30 border-2 border-brand-400 shadow-md"></div>`;
+                shapeName.innerText = "1 Unit Square";
+                box.innerHTML = `<div class="w-6 h-6 rounded bg-brand-500/30 border border-brand-400"></div>`;
             } else if (state.mode === '3d') {
-                shapeName.innerText = "1 Unit 3D Cube";
-                box.innerHTML = `<div class="w-8 h-8 rounded bg-neon-amber/30 border-2 border-neon-amber flex items-center justify-center text-xs text-neon-amber font-bold shadow-md"><i class="fa-solid fa-cube"></i></div>`;
-            } else if (state.mode === 'fermi') {
-                shapeName.innerText = "Order of Magnitude";
-                box.innerHTML = `<div class="mono text-xs font-bold text-neon-purple">10<sup>X</sup> Factor</div>`;
+                shapeName.innerText = "1 Unit Cube";
+                box.innerHTML = `<div class="w-6 h-6 rounded bg-neon-amber/30 border border-neon-amber flex items-center justify-center text-[10px] text-neon-amber font-bold"><i class="fa-solid fa-cube"></i></div>`;
+            } else if (state.mode === 'stats') {
+                shapeName.innerText = "Mean Sample Point";
+                box.innerHTML = `<div class="w-3 h-3 rounded-full bg-neon-pink"></div>`;
+            } else if (state.mode === 'combo') {
+                shapeName.innerText = "Combinatorial Outcome";
+                box.innerHTML = `<div class="mono text-xs font-bold text-neon-purple">${state.comboType}</div>`;
             }
         }
 
-        /* Slider & Number Input Syncing */
+        /* Check & Score Logic */
+        function checkEstimate() {
+            state.isChecked = true;
+            stopTimer();
+
+            const actual = state.targetValue;
+            const estimate = state.userEstimate;
+            const diff = Math.abs(actual - estimate);
+            const errorRate = diff / actual;
+            const accuracy = Math.max(0, Math.round((1 - errorRate) * 100));
+
+            const feedbackCard = document.getElementById('result-feedback-card');
+            const badge = document.getElementById('feedback-badge');
+
+            document.getElementById('val-actual').innerText = actual.toLocaleString();
+            document.getElementById('val-estimated').innerText = estimate.toLocaleString();
+            document.getElementById('val-accuracy').innerText = `${accuracy}%`;
+
+            if (errorRate <= state.tolerance) {
+                badge.className = "px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-500/20 text-neon-emerald border border-emerald-500/30";
+                badge.innerText = "Bullseye! 🎯";
+                state.score += 100 + accuracy;
+                state.streak += 1;
+            } else {
+                badge.className = "px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-rose-500/20 text-neon-rose border border-rose-500/30";
+                badge.innerText = "Missed";
+                state.streak = 0;
+            }
+
+            state.history.push({ mode: state.mode, actual, estimate, accuracy });
+            updateHUDStats();
+            updateChart();
+
+            feedbackCard.classList.remove('hidden');
+            document.getElementById('btn-check').classList.add('hidden');
+            document.getElementById('btn-next').classList.remove('hidden');
+
+            if (['1d', '2d', 'stats', 'combo'].includes(state.mode)) render();
+        }
+
+        function nextLevel() {
+            state.level++;
+            document.getElementById('hud-level-badge').innerText = `Level ${state.level}`;
+            resetCurrentChallenge();
+        }
+
+        function updateHUDStats() {
+            document.getElementById('stat-score').innerText = state.score;
+            document.getElementById('stat-streak').innerText = `${state.streak} 🔥`;
+        }
+
+        /* Scientific Calculator Drawer Functions */
+        let calcVal = "";
+        function toggleCalculator() { document.getElementById('calc-drawer').classList.toggle('hidden'); }
+        function calcPress(v) {
+            if (v === 'C') calcVal = "";
+            else calcVal += v;
+            document.getElementById('calc-screen').value = calcVal || "0";
+        }
+        function calcEval() {
+            try {
+                let parsed = calcVal.replace(/\^/g, '**');
+                calcVal = eval(parsed).toString();
+                document.getElementById('calc-screen').value = calcVal;
+            } catch(e) {
+                document.getElementById('calc-screen').value = "Error";
+                calcVal = "";
+            }
+        }
+
+        /* Custom Challenge Creator */
+        function toggleCustomCreatorModal() { document.getElementById('modal-creator').classList.toggle('hidden'); }
+        function applyCustomChallenge() {
+            const mode = document.getElementById('creator-mode').value;
+            const target = parseInt(document.getElementById('creator-target').value) || 20;
+            const unit = document.getElementById('creator-unit').value || 'units';
+
+            switchMode(mode);
+            state.targetValue = target;
+            state.isCustom = true;
+            state.customUnitLabel = unit;
+
+            document.getElementById('unit-indicator').innerText = `Custom: ${unit}`;
+            toggleCustomCreatorModal();
+        }
+
+        /* Helpers & UI Controls */
         function setupEventListeners() {
             const slider = document.getElementById('estimate-slider');
             const input = document.getElementById('estimate-number-input');
@@ -960,111 +1079,26 @@
             updateEstimateDisplay();
         }
 
-        function setEstimatePreset(val) {
-            const input = document.getElementById('estimate-number-input');
-            const slider = document.getElementById('estimate-slider');
-            input.value = val;
-            slider.value = val;
-            state.userEstimate = val;
-            updateEstimateDisplay();
-        }
-
         function updateEstimateDisplay() {
             document.getElementById('estimate-display-val').innerText = state.userEstimate.toLocaleString();
         }
 
-        /* Check Estimate Logic */
-        function checkEstimate() {
-            state.isChecked = true;
-            stopTimer();
+        function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
+        function toggleAnalyticsModal() { document.getElementById('modal-analytics').classList.toggle('hidden'); }
+        function toggleSettingsModal() { document.getElementById('modal-settings').classList.toggle('hidden'); }
+        function toggleHint() { document.getElementById('hint-overlay').classList.toggle('hidden'); }
 
-            const actual = state.targetValue;
-            const estimate = state.userEstimate;
-            const diff = Math.abs(actual - estimate);
-            const errorRate = diff / actual;
-            const accuracy = Math.max(0, Math.round((1 - errorRate) * 100));
-
-            // Feedback Card UI
-            const feedbackCard = document.getElementById('result-feedback-card');
-            const badge = document.getElementById('feedback-badge');
-            const actualEl = document.getElementById('val-actual');
-            const estimatedEl = document.getElementById('val-estimated');
-            const accuracyEl = document.getElementById('val-accuracy');
-            const explanation = document.getElementById('feedback-explanation');
-
-            actualEl.innerText = actual.toLocaleString();
-            estimatedEl.innerText = estimate.toLocaleString();
-            accuracyEl.innerText = `${accuracy}%`;
-
-            if (errorRate <= state.tolerance) {
-                badge.className = "px-2 py-0.5 rounded text-xs font-bold uppercase bg-emerald-500/20 text-neon-emerald border border-emerald-500/30";
-                badge.innerText = "Bullseye! 🎯";
-                explanation.innerText = `Awesome job! Your estimate was within the target tolerance.`;
-                state.score += 100 + accuracy;
-                state.streak += 1;
-            } else if (errorRate <= state.tolerance * 2) {
-                badge.className = "px-2 py-0.5 rounded text-xs font-bold uppercase bg-amber-500/20 text-neon-amber border border-amber-500/30";
-                badge.innerText = "Close!";
-                explanation.innerText = `Good effort! Your estimate was off by ${Math.round(errorRate * 100)}%.`;
-                state.score += 30;
-                state.streak = 0;
-            } else {
-                badge.className = "px-2 py-0.5 rounded text-xs font-bold uppercase bg-rose-500/20 text-neon-rose border border-rose-500/30";
-                badge.innerText = "Needs Calibration";
-                explanation.innerText = `Off target. Keep practicing your subdivision techniques!`;
-                state.streak = 0;
-            }
-
-            // Record History Stats
-            state.history.push({ mode: state.mode, actual, estimate, accuracy });
-            updateHUDStats();
-            updateChart();
-
-            feedbackCard.classList.remove('hidden');
-            document.getElementById('btn-check').classList.add('hidden');
-            document.getElementById('btn-next').classList.remove('hidden');
-
-            // Trigger visual reveal animations
-            if (state.mode === '1d' || state.mode === '2d') render();
-            if (state.mode === '3d') reveal3DPacking();
-        }
-
-        function nextLevel() {
-            state.level++;
-            document.getElementById('hud-level-badge').innerText = `Level ${state.level}`;
-            resetCurrentChallenge();
-        }
-
-        /* HUD & Stats Updates */
-        function updateHUDStats() {
-            document.getElementById('stat-score').innerText = state.score;
-            document.getElementById('stat-streak').innerText = `${state.streak} 🔥`;
-
-            if (state.history.length > 0) {
-                const avgAcc = Math.round(state.history.reduce((a, b) => a + b.accuracy, 0) / state.history.length);
-                document.getElementById('stat-accuracy').innerText = `${avgAcc}%`;
-            }
-        }
-
-        /* Timer Handler */
         function startTimer() {
             stopTimer();
             state.timerSeconds = 30;
             const timerBox = document.getElementById('timer-box');
-            const timerVal = document.getElementById('timer-val');
             timerBox.classList.remove('hidden');
             timerBox.classList.add('flex');
             
-            timerVal.innerText = `00:${state.timerSeconds < 10 ? '0' : ''}${state.timerSeconds}`;
-
             state.timerInterval = setInterval(() => {
                 state.timerSeconds--;
-                timerVal.innerText = `00:${state.timerSeconds < 10 ? '0' : ''}${state.timerSeconds}`;
-
-                if (state.timerSeconds <= 0) {
-                    stopTimer();
-                    checkEstimate();
-                }
+                document.getElementById('timer-val').innerText = `00:${state.timerSeconds < 10 ? '0' : ''}${state.timerSeconds}`;
+                if (state.timerSeconds <= 0) { stopTimer(); checkEstimate(); }
             }, 1000);
         }
 
@@ -1073,57 +1107,9 @@
             document.getElementById('timer-box').classList.add('hidden');
         }
 
-        /* Visual Hint Toggle */
-        function toggleHint() {
-            const overlay = document.getElementById('hint-overlay');
-            overlay.classList.toggle('hidden');
-        }
-
-        /* Settings Modal Controls */
-        function toggleSettingsModal() {
-            const modal = document.getElementById('modal-settings');
-            modal.classList.toggle('hidden');
-
-            // Bind values
-            document.getElementById('setting-difficulty').value = state.difficulty;
-            document.getElementById('setting-tolerance').value = state.tolerance * 100;
-            document.getElementById('tolerance-val').innerText = `${state.tolerance * 100}%`;
-            document.getElementById('setting-timer').checked = state.timerEnabled;
-
-            // Change listeners
-            document.getElementById('setting-difficulty').onchange = (e) => { state.difficulty = e.target.value; resetCurrentChallenge(); };
-            document.getElementById('setting-tolerance').oninput = (e) => {
-                state.tolerance = parseInt(e.target.value) / 100;
-                document.getElementById('tolerance-val').innerText = `${e.target.value}%`;
-            };
-            document.getElementById('setting-timer').onchange = (e) => { state.timerEnabled = e.target.checked; };
-        }
-
-        /* Analytics Modal Controls */
-        function toggleAnalyticsModal() {
-            const modal = document.getElementById('modal-analytics');
-            modal.classList.toggle('hidden');
-            
-            if (!modal.classList.contains('hidden')) {
-                // Refresh modal stats
-                document.getElementById('modal-stat-rounds').innerText = state.history.length;
-                
-                if (state.history.length > 0) {
-                    const best = Math.max(...state.history.map(h => h.accuracy));
-                    const bullseyes = state.history.filter(h => h.accuracy >= 95).length;
-                    const avgError = Math.round(100 - (state.history.reduce((a, b) => a + b.accuracy, 0) / state.history.length));
-
-                    document.getElementById('modal-stat-best').innerText = `${best}%`;
-                    document.getElementById('modal-stat-bullseyes').innerText = bullseyes;
-                    document.getElementById('modal-stat-error').innerText = `${avgError}%`;
-                }
-            }
-        }
-
-        /* Chart.js Setup */
         function initChart() {
-            const ctx = document.getElementById('accuracyChart').getContext('2d');
-            chartInstance = new Chart(ctx, {
+            const ctxChart = document.getElementById('accuracyChart').getContext('2d');
+            chartInstance = new Chart(ctxChart, {
                 type: 'line',
                 data: {
                     labels: [],
@@ -1133,21 +1119,17 @@
                         borderColor: '#6366f1',
                         backgroundColor: 'rgba(99, 102, 241, 0.1)',
                         fill: true,
-                        tension: 0.3,
-                        borderWidth: 2,
-                        pointBackgroundColor: '#06b6d4'
+                        tension: 0.3
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        y: { min: 0, max: 100, ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                        x: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } }
+                        y: { min: 0, max: 100, ticks: { color: '#9ca3af' } },
+                        x: { ticks: { color: '#9ca3af' } }
                     },
-                    plugins: {
-                        legend: { display: false }
-                    }
+                    plugins: { legend: { display: false } }
                 }
             });
         }
@@ -1159,7 +1141,6 @@
             chartInstance.update();
         }
 
-        /* Resize Helper for Three.js */
         function onThreeWindowResize() {
             const viewport = document.getElementById('three-viewport');
             if (!viewport || !camera || !renderer) return;
