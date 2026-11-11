@@ -108,22 +108,31 @@ const S3=[["sphere",()=>{const r=R(1.3,2.1);return[new THREE.SphereGeometry(r,32
 ["box",()=>{const a=R(1.6,3.2),b=R(1.4,3),c=R(1.6,3.2);return[new THREE.BoxGeometry(a,b,c),a*b*c,b]}],
 ["octahedron",()=>{const r=R(1.5,2.3);return[new THREE.OctahedronGeometry(r),4/3*r**3,2*r]}],
 ["torus",()=>{const a=R(1.3,1.9),b=R(.5,.8);return[new THREE.TorusGeometry(a,b,20,48),2*Math.PI**2*a*b*b,2*b,1]}]],
-U3=[["cube",()=>[new THREE.BoxGeometry(1,1,1),1,1]],["ball",()=>[new THREE.SphereGeometry(.6,24,18),4/3*Math.PI*.216,1.2]],["can",()=>[new THREE.CylinderGeometry(.5,.5,1.2,28),Math.PI*.25*1.2,1.2]],["cone",()=>[new THREE.ConeGeometry(.7,1.4,28),Math.PI*.49*1.4/3,1.4]]];
+U3=[["cube",()=>[new THREE.BoxGeometry(1,1,1),1,1]],["ball",()=>[new THREE.SphereGeometry(.6204,24,18),1,1.241]],["can",()=>[new THREE.CylinderGeometry(.5,.5,1.273,28),1,1.273]],["cone",()=>[new THREE.ConeGeometry(.7,1.949,28),1,1.949]]];
 M["3d"]={tol:.2,pts:200,
-gen(){const s=pick(S3),u=pick(U3);this.sg=s[1]();this.ug=u[1]();this.un=u[0];this.ans=Math.round(this.sg[1]/this.ug[1]);this.desc="Drag to rotate. About how many small amber "+u[0]+"s match the volume of the large teal "+s[0]+"? Both are drawn to the same scale."},
+gen(){const s=pick(S3),u=pick(U3);this.sg=s[1]();this.ug=u[1]();this.un=u[0];this.ans=Math.round(this.sg[1]/this.ug[1]);this.desc="The small amber "+u[0]+" has a volume of exactly 1 unit. Drag to rotate: about how many of them fill the large teal "+s[0]+"?"},
 note(){return"Large ≈ "+this.sg[1].toFixed(1)+" units³; one small "+this.un+" ≈ "+this.ug[1].toFixed(2)+" units³; ratio ≈ "+this.ans},
 draw(){if(!T)return;if(T.g){T.g.traverse(o=>{o.geometry&&o.geometry.dispose();o.material&&o.material.dispose()});T.sc.remove(T.g)}
 const g=T.g=new THREE.Group(),put=([ge,v,h,rx],c,x)=>{const m=new THREE.Mesh(ge,new THREE.MeshStandardMaterial({color:c,roughness:.45}));m.position.set(x,-2+h/2,0);if(rx)m.rotation.x=Math.PI/2;m.add(new THREE.LineSegments(new THREE.EdgesGeometry(ge,30),T.lm));g.add(m)};
 put(this.sg,0x14b8a6,-1.3);put(this.ug,0xf59e0b,3.6);T.sc.add(g)}};
 
+const X=[
+()=>{const n=I(4,7);return["Seat "+n+" friends around a round table. Rotations of one seating count once. How many seatings exist?",F(n-1),"("+n+"−1)! = "+F(n-1),n,n]},
+()=>{const w=pick(["BANANA","LEVEL","APPLE","COFFEE","TOMATO","BALLOON","SEVEN","ALABAMA"]),h={};[...w].forEach(c=>h[c]=(h[c]||0)+1);return["How many distinct arrangements of the letters in "+w+" are there?",Math.round(F(w.length)/Object.values(h).reduce((p,v)=>p*F(v),1)),w.length+"! ÷ factorials of repeated letters",w.length,0]},
+()=>{const n=I(5,8),k=I(3,4);return["Share "+n+" identical sweets among "+k+" children (a child may get none). How many ways are there?",Cn(n+k-1,k-1),"C("+n+"+"+k+"−1, "+k+"−1)",n,k]},
+()=>{const n=I(4,8),f=[1,1];for(let i=2;i<=n+1;i++)f.push(f[i-1]+f[i-2]);return["How many binary strings of length "+n+" have no two 1s next to each other?",f[n+1],"Fibonacci number F("+(n+2)+")",n,0]},
+()=>{const n=I(2,4);return["Roll "+n+" fair dice. In how many outcomes does at least one six appear?",6**n-5**n,"6^"+n+" − 5^"+n,n,1]},
+()=>{const n=I(5,8),k=I(2,3);return["Pick a captain, then a team of "+k+" others, from "+n+" people. How many ways?",n*Cn(n-1,k),n+" × C("+(n-1)+","+k+")",n,k+1]},
+()=>{const n=I(5,9);return[n+" points lie on a circle, no three in a line. How many triangles have corners at these points?",Cn(n,3),"C("+n+",3)",n,3]},
+()=>{const n=I(6,12);return["How many diagonals does a convex polygon with "+n+" sides have?",n*(n-3)/2,n+"×("+n+"−3) ÷ 2",n,0]}];
 M.combo={tol:0,pts:150,
-gen(){const t=this.t=I(0,5);
+gen(){const t=this.t=I(0,5+X.length);
 if(t==0){const n=this.n=I(4,8);this.ans=n*(n-1)/2;this.L=Array.from({length:n},(_,i)=>({a:Math.PI*i/n+R(-.12,.12),px:R(.3,.7),py:R(.3,.7)}));this.desc=n+" lines, no two parallel and no three through one point. What is the maximum number of intersection points?";this.f="C("+n+",2) = "+n+"×"+(n-1)+"÷2"}
 else if(t==1){const a=this.a=I(2,5),b=this.b=I(2,4);this.ans=Cn(a+b,a);this.desc="Walk from the green corner to the red corner of a "+a+"×"+b+" grid, moving only right or down. How many routes exist?";this.f="("+a+"+"+b+")! ÷ ("+a+"! × "+b+"!)"}
 else if(t==2){const n=this.n=I(5,9),k=this.k=I(2,4);this.ans=Cn(n,k);this.desc="How many different committees of "+k+" can be chosen from "+n+" people?";this.f="C("+n+","+k+") = "+n+"! ÷ ("+k+"! × "+(n-k)+"!)"}
 else if(t==3){const n=this.n=this.k=I(4,7);this.ans=F(n);this.desc=n+" different books are lined up on a shelf. In how many orders can they be arranged?";this.f=n+"! = "+this.ans}
 else if(t==4){const n=this.n=I(5,9),k=this.k=I(2,4);this.ans=F(n)/F(n-k);this.desc="A lock uses "+k+" different symbols chosen from "+n+", and order matters. How many codes are possible?";this.f=n+"! ÷ "+(n-k)+"!"}
-else{const n=this.n=this.k=I(4,8);this.ans=2**n;this.desc="A shop offers "+n+" toppings. A pizza can have any set of toppings, including none. How many different pizzas can be made?";this.f="2^"+n}},
+else if(t>5){const[d,a,f,n,k]=X[t-6]();this.n=n;this.k=k;this.ans=a;this.desc=d;this.f=f}else{const n=this.n=this.k=I(4,8);this.ans=2**n;this.desc="A shop offers "+n+" toppings. A pizza can have any set of toppings, including none. How many different pizzas can be made?";this.f="2^"+n}},
 note(){return"Formula: "+this.f},
 draw(){const[x,w,h]=fit($("#c-combo"),.5),t=this.t;x.lineWidth=2;
 if(t==0){x.strokeStyle=C("--wn");this.L.forEach(l=>{const cx=l.px*w,cy=l.py*h,dx=Math.cos(l.a)*w,dy=Math.sin(l.a)*w;x.beginPath();x.moveTo(cx-dx,cy-dy);x.lineTo(cx+dx,cy+dy);x.stroke()})}
@@ -178,22 +187,33 @@ if(!FS.done){FS.done=true;award(sub&&ok,100*(lv+1))}
 const z=$("#fz");z.hidden=false;z.className="res "+(!sub?"inf":ok?"ok":"no");
 z.textContent=(sub?(ok?"Within tolerance. ":"Outside tolerance. "):"Revealed. ")+"You: "+FS.tot.toExponential(2)+" · Actual: "+t.toExponential(2)+" "+q.u+" (off by "+dex.toFixed(2)+" orders of magnitude, limit ±"+tol+").\n"+q.e}
 
-async function initG(){await load("https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js");
-const{Engine,Render,Runner,Bodies,Composite,Events,Body}=Matter,W=360,H=400,sp=30,cx=W/2,x0=cx-5*sp,ye=272,en=Engine.create(),rd=Render.create({element:$("#gb"),engine:en,options:{width:W,height:H,wireframes:false,background:"transparent"}}),ru=Runner.create(),add=b=>Composite.add(en.world,b),
-bin=o=>Math.min(9,Math.max(0,Math.floor((o.position.x-x0)/sp))),tot=()=>G.c.reduce((a,b)=>a+b,0),top=()=>Math.max(1,...G.c,...G.c.map((_,i)=>Cn(9,i)/512*tot()));
-for(let r=0;r<9;r++)for(let c=0;c<=r;c++)add(Bodies.circle(cx+(c-r/2)*sp,42+r*26,3.5,{isStatic:true,label:"peg",render:{fillStyle:"#818cf8"}}));
-[x0-4,x0+10*sp+4].forEach(x=>add(Bodies.rectangle(x,H/2,6,H,{isStatic:true,label:"wall",render:{fillStyle:"#64748b"}})));
-G={en,rd,ru,cx,H,c:Array(10).fill(0),d:0};
-Events.on(en,"collisionStart",e=>e.pairs.forEach(({bodyA:a,bodyB:b})=>{const k=a.label=="ball"?a:b.label=="ball"?b:0;if(k&&(k==a?b:a).label=="peg")Body.setVelocity(k,{x:(Math.random()<.5?-1:1)*1.3,y:Math.min(k.velocity.y,2)*.6})}));
-Events.on(en,"afterUpdate",()=>Composite.allBodies(en.world).forEach(o=>{if(o.label!="ball")return;if(!o.cnt&&o.position.y>ye){o.cnt=1;G.c[bin(o)]++;o.collisionFilter.mask=0}if(o.cnt&&o.position.y>H-6-G.c[bin(o)]/top()*(H-ye-10))Composite.remove(en.world,o)}));
-Events.on(rd,"afterRender",()=>{const x=rd.context,t=top(),bh=H-ye-10,n=tot();x.fillStyle="#818cf88c";G.c.forEach((v,i)=>x.fillRect(x0+i*sp+2,H-6-v/t*bh,sp-4,v/t*bh));
-x.strokeStyle="#f59e0b";x.lineWidth=2;x.setLineDash([5,4]);x.beginPath();G.c.forEach((_,i)=>{const px=x0+i*sp+sp/2,py=H-6-Cn(9,i)/512*n/t*bh;i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke();x.setLineDash([])});
-ru.enabled=false;Runner.run(ru,en);setInterval(gstats,400)}
-function drop(n){if(!G)return;for(let i=0;i<n;i++)setTimeout(()=>{G.d++;Matter.Composite.add(G.en.world,Matter.Bodies.circle(G.cx+R(-1,1),8,6.5,{label:"ball",restitution:.35,friction:0,frictionAir:.01,collisionFilter:{group:-1},render:{fillStyle:"#f59e0b"}}))},i*60)}
-function resetG(){if(!G)return;Matter.Composite.allBodies(G.en.world).filter(o=>o.label=="ball").forEach(o=>Matter.Composite.remove(G.en.world,o));G.c.fill(0);G.d=0;gstats()}
-function gstats(){if(!G||$("#t-stat").hidden)return;const c=G.c,n=c.reduce((a,b)=>a+b,0);$("#gn").textContent=G.d;$("#gs").textContent=n;
+function initG(){const cv=document.createElement("canvas");$("#gb").appendChild(cv);G={cv,acc:0,last:0,run:0};setBins()}
+function setBins(){const N=+$("#gk").value,sp=392/(N+1),br=Math.max(2.5,Math.min(7,sp*.2));Object.assign(G,{N,sp,br,pr:br*.55,sy:Math.min(sp*.9,30),y0:24,LW:420,w:0});G.LH=Math.round(24+N*G.sy+150);G.x0=210-(N+1)*sp/2;resetG()}
+function resetG(){if(!G)return;Object.assign(G,{c:Array(G.N+1).fill(0),b:[],q:0,d:0});gstats()}
+function drop(n){if(G)G.q+=n}
+const gl=(r,k)=>[210+(2*k-r)*G.sp/2,G.y0+r*G.sy-G.pr-G.br],
+gtop=()=>{const n=G.c.reduce((a,b)=>a+b,0);return Math.max(1,...G.c,...G.c.map((_,i)=>Cn(G.N,i)/2**G.N*n))},
+gpos=o=>{const e=o.u;return[o.A[0]+(o.B[0]-o.A[0])*e,o.A[1]+(o.B[1]-o.A[1])*(o.f?e*e:e)-(o.f?0:G.sp*.8*e*(1-e))]};
+function gstep(dt){G.acc+=dt;const iv=Math.max(.008,.04-G.q*8e-5);while(G.q>0&&G.acc>iv){G.acc-=iv;G.q--;G.d++;G.dirty=1;G.b.push({r:0,k:0,u:0,f:1,A:[210+R(-1,1),2],B:gl(0,0)})}
+if(G.q<=0)G.acc=Math.min(G.acc,.04);
+G.b=G.b.filter(o=>{o.u+=dt/(o.fin?.32:o.f?.22:.13);if(o.u<1)return true;
+if(o.fin){G.c[o.k]++;G.dirty=1;return false}
+o.k+=Math.random()<.5?1:0;o.A=o.B;o.u=0;o.f=0;
+if(o.r<G.N-1){o.r++;o.B=gl(o.r,o.k)}else{o.fin=o.f=1;o.B=[G.x0+(o.k+.5)*G.sp,G.LH-8-G.c[o.k]/gtop()*100-G.br]}
+return true});
+if(G.dirty&&performance.now()-G.last>250){G.dirty=0;G.last=performance.now();gstats()}}
+function gdraw(){const{cv,N,sp,sy,br,pr,x0,LW,LH,c}=G,w=cv.clientWidth||320;
+if(G.w!=w||G.h!=LH){G.w=w;G.h=LH;G.x=fit(cv,LH/LW)[0]}
+const x=G.x,n=c.reduce((a,b)=>a+b,0),t=gtop(),fl=LH-8;
+x.save();x.scale(w/LW,w/LW);x.clearRect(0,0,LW,LH);
+x.fillStyle="#818cf88c";c.forEach((v,i)=>x.fillRect(x0+i*sp+1,fl-v/t*100,sp-2,v/t*100));
+x.strokeStyle="#f59e0b";x.lineWidth=2;x.setLineDash([5,4]);x.beginPath();c.forEach((_,i)=>{const px=x0+(i+.5)*sp,py=fl-Cn(N,i)/2**N*n/t*100;i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke();x.setLineDash([]);
+x.fillStyle="#818cf8";for(let r=0;r<N;r++)for(let k=0;k<=r;k++){x.beginPath();x.arc(210+(2*k-r)*sp/2,G.y0+r*sy,pr,0,7);x.fill()}
+x.fillStyle="#f59e0b";G.b.forEach(o=>{const[px,py]=gpos(o);x.beginPath();x.arc(px,py,br,0,7);x.fill()});x.restore()}
+function gloop(){if(G.run)return;G.run=1;let t=performance.now();(function f(n){if(cur!="stat"){G.run=0;return}requestAnimationFrame(f);const dt=Math.min(.05,(n-t)/1e3);t=n;gstep(dt);gdraw()})(t)}
+function gstats(){const c=G.c,N=G.N,n=c.reduce((a,b)=>a+b,0);$("#gn").textContent=G.d;$("#gs").textContent=n;$("#gmi").textContent=(N/2).toFixed(2);$("#gdi").textContent=(Math.sqrt(N)/2).toFixed(2);
 if(!n){["gm","gd","gf"].forEach(i=>$("#"+i).textContent="–");return}
-const m=c.reduce((a,v,i)=>a+v*i,0)/n,sd=Math.sqrt(c.reduce((a,v,i)=>a+v*(i-m)**2,0)/n),tv=c.reduce((a,v,i)=>a+Math.abs(v/n-Cn(9,i)/512),0)/2;
+const m=c.reduce((a,v,i)=>a+v*i,0)/n,sd=Math.sqrt(c.reduce((a,v,i)=>a+v*(i-m)**2,0)/n),tv=c.reduce((a,v,i)=>a+Math.abs(v/n-Cn(N,i)/2**N),0)/2;
 $("#gm").textContent=m.toFixed(2);$("#gd").textContent=sd.toFixed(2);$("#gf").textContent=(100*(1-tv)).toFixed(0)+"%"}
 
 function evalExpr(s){let p=0;const w=()=>{while(s[p]==" ")p++},
@@ -213,7 +233,7 @@ $("#main").innerHTML='<p class="sub" id="err" role="alert"></p>'
 +`<section id="t-fermi" hidden><div class="card"><div class="row sp"><div><h2>Fermi estimation</h2><p class="sub">Tune each factor to a realistic size and the total follows. Closer to the real value scores more.</p></div><div class="row"><select id="fl" aria-label="Difficulty"><option value="0">Easy · 2 factors · ±1.0</option><option value="1" selected>Medium · 3 factors · ±0.5</option><option value="2">Hard · 4 factors · ±0.35</option><option value="3">Expert · 5 factors · ±0.25</option></select><button class="btn" data-act="nf">New prompt</button></div></div>
 <div class="stage" style="padding:16px"><p class="sub" id="fc"></p><h3 id="ft" style="font-size:18px"></h3></div><div class="fx" id="fx"></div>
 <div class="row sp"><div><span class="sub">Your estimate</span><div><b id="fo" style="font-size:24px"></b> <span class="sub" id="fu"></span></div></div><div class="row"><button class="btn p" data-act="sf">Submit</button><button class="btn" data-act="rf">Reveal</button></div></div><div class="res" id="fz" hidden></div></div></section>`
-+`<section id="t-stat" class="grid" hidden><div class="card"><div class="row sp"><div><h2>Galton board</h2><p class="sub">Nine rows of pegs, ten bins. Every bounce is a 50/50 choice, so the bars grow into a bell curve. The dashed line marks the ideal.</p></div><div class="row"><button class="btn p" data-act="g20">Drop 20</button><button class="btn p" data-act="g100">Drop 100</button><button class="btn" data-act="gr">Reset</button></div></div><div class="stage" id="gb"></div></div><div class="card"><h3>Live statistics</h3><div><div class="kv"><span>Balls dropped</span><b id="gn">0</b></div><div class="kv"><span>Balls counted</span><b id="gs">0</b></div><div class="kv"><span>Mean bin (ideal 4.50)</span><b id="gm">–</b></div><div class="kv"><span>Std dev (ideal 1.50)</span><b id="gd">–</b></div><div class="kv"><span>Match to binomial</span><b id="gf">–</b></div></div></div></section>`
++`<section id="t-stat" class="grid" hidden><div class="card"><div><h2>Galton board</h2><p class="sub">Each ball makes an independent 50/50 left or right choice at every peg row. The bars grow into a bell curve; the dashed line is the ideal binomial.</p></div><div class="row"><select id="gk" aria-label="Number of bins"><option value="5">6 bins</option><option value="9" selected>10 bins</option><option value="15">16 bins</option><option value="23">24 bins</option><option value="31">32 bins</option></select><button class="btn p" data-act="g20">Drop 20</button><button class="btn p" data-act="g100">Drop 100</button><button class="btn p" data-act="g500">Drop 500</button><button class="btn" data-act="gr">Reset</button></div><div class="stage" id="gb"></div></div><div class="card"><h3>Live statistics</h3><div><div class="kv"><span>Balls dropped</span><b id="gn">0</b></div><div class="kv"><span>Balls counted</span><b id="gs">0</b></div><div class="kv"><span>Mean bin (ideal <span id="gmi"></span>)</span><b id="gm">–</b></div><div class="kv"><span>Std dev (ideal <span id="gdi"></span>)</span><b id="gd">–</b></div><div class="kv"><span>Match to binomial</span><b id="gf">–</b></div></div></div></section>`
 +quiz("combo","Counting challenge","Your count","<canvas id='c-combo'></canvas>");
 $("#keys").innerHTML="C ( ) / 7 8 9 * 4 5 6 - 1 2 3 + 0 . ⌫ =".split(" ").map(k=>`<button class="btn${k=="="?" p":""}" data-k="${k}">${k}</button>`).join("");
 
@@ -221,13 +241,13 @@ function redraw(){if(cur!="3d")M[cur]?.draw?.()}
 async function show(id){if(id==cur)return;cur=id;
 TABS.forEach(([k])=>{$("#t-"+k).hidden=k!=id;$("#b-"+k).setAttribute("aria-selected",k==id)});$("#err").textContent="";
 try{if(id=="3d"&&!T){await init3d();fresh("3d")}if(id=="stat"&&!G)await initG()}catch{$("#err").textContent="This module needs an internet connection to load its library. Check your connection and select the tab again.";cur=0;return}
-if(G){const on=cur=="stat";G.ru.enabled=on;on?Matter.Render.run(G.rd):Matter.Render.stop(G.rd)}
+if(G&&cur=="stat")gloop();
 cur=="3d"?loop():redraw()}
 
-const A={nf:newFermi,sf:()=>endFermi(true),rf:()=>endFermi(false),g20:()=>drop(20),g100:()=>drop(100),gr:resetG};
+const A={nf:newFermi,sf:()=>endFermi(true),rf:()=>endFermi(false),g20:()=>drop(20),g100:()=>drop(100),g500:()=>drop(500),gr:resetG};
 document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const d=b.dataset;
 if(d.tab)show(d.tab);else if(d.new)fresh(d.new);else if(d.chk)check(d.chk);else if(d.rev)reveal(d.rev);else if(d.act)A[d.act]();else if(d.k)key(d.k)});
-document.addEventListener("change",e=>{if(e.target.id=="fl")newFermi()});
+document.addEventListener("change",e=>{if(e.target.id=="fl")newFermi();if(e.target.id=="gk")setBins()});
 document.addEventListener("input",e=>{const i=e.target.dataset.i;if(i!=null&&FS){FS.v[i]=10**e.target.value;fcalc()}});
 document.addEventListener("keydown",e=>{if(e.key!="Enter")return;const id=e.target.id||"";if(id=="cd")ev();else if(id.startsWith("i-"))check(id.slice(2))});
 const dlg=$("#calc");$("#calcb").onclick=()=>dlg.showModal();$("#xc").onclick=()=>dlg.close();dlg.addEventListener("click",e=>{if(e.target==dlg)dlg.close()});
