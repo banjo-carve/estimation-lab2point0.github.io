@@ -1,349 +1,241 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Estimation Science & Math Lab Pro v5.0</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Three.js & OrbitControls CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: { 50: '#eef2ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 900: '#312e81' },
-            accent: { 500: '#10b981', 600: '#059669' }
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    .glass-card {
-      background: rgba(17, 24, 39, 0.85);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Estimation Lab</title>
+<style>
+:root{--bg:#f5f6fb;--s:#fff;--s2:#eef0f8;--t:#12152a;--m:#5d647f;--b:#dde0ee;--a:#5b5bf0;--a2:#0d9488;--ok:#0f9d6a;--no:#d6455d;--wn:#d97706;--on:#fff;--p:clamp(14px,3vw,32px);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#090d18;--s:#111827;--s2:#1a2236;--t:#eef1ff;--m:#97a0bf;--b:#252d47;--a:#8b8bff;--a2:#2dd4bf;--ok:#34d399;--no:#fb7185;--wn:#fbbf24;--on:#0a0e1a}}
+:root[data-theme="dark"]{--bg:#090d18;--s:#111827;--s2:#1a2236;--t:#eef1ff;--m:#97a0bf;--b:#252d47;--a:#8b8bff;--a2:#2dd4bf;--ok:#34d399;--no:#fb7185;--wn:#fbbf24;--on:#0a0e1a}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+[hidden]{display:none!important}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--t);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px var(--p);background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--b)}
+.brand,.bar{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{width:38px;height:38px;flex:none;border-radius:12px;display:grid;place-items:center;font-weight:800;font-size:18px;color:#fff;background:linear-gradient(135deg,#6366f1,#14b8a6)}
+.brand h1{margin:0;font-size:17px;line-height:1.15}.brand p{margin:0;font-size:12px;color:var(--m)}
+.chip,.ib{border:1px solid var(--b);background:var(--s);color:var(--t);border-radius:999px;padding:6px 12px;font:inherit;font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ib{cursor:pointer;width:36px;height:36px;padding:0;display:grid;place-items:center;font-size:16px}
+nav{display:flex;gap:8px;overflow-x:auto;padding:14px var(--p);scrollbar-width:none;max-width:1100px;margin:0 auto}
+nav button{flex:none;border:1px solid var(--b);background:var(--s);color:var(--m);border-radius:999px;padding:9px 16px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s,color .15s}
+nav button[aria-selected=true]{background:var(--a);border-color:var(--a);color:var(--on)}
+main{max-width:1100px;margin:0 auto;padding:0 var(--p) 48px}
+.grid{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:900px){.grid{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}}
+@media(max-width:700px){.brand p{display:none}}
+.card{background:var(--s);border:1px solid var(--b);border-radius:20px;padding:clamp(16px,2.5vw,24px);display:flex;flex-direction:column;gap:16px;align-content:start}
+h2,h3{margin:0}h2{font-size:18px}h3{font-size:15px}
+.sub{margin:0;color:var(--m);font-size:13px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.sp{justify-content:space-between}
+.stage{background:var(--s2);border-radius:14px;overflow:hidden}
+canvas{display:block;width:100%}
+input,select,.btn{font:inherit;font-size:14px;border-radius:12px;border:1px solid var(--b);background:var(--s2);color:var(--t);padding:10px 14px}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+input[type=number]{width:min(100%,170px)}
+input[type=range]{width:100%;padding:0;accent-color:var(--a)}
+.btn{cursor:pointer;font-weight:600}.btn:hover{border-color:var(--a)}
+.btn.p{background:var(--a);border-color:var(--a);color:var(--on)}
+.res{padding:14px;border-radius:12px;background:var(--s2);color:var(--m);font-size:14px;white-space:pre-line}
+.res.ok{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
+.res.no{background:color-mix(in srgb,var(--no) 16%,transparent);color:var(--no)}
+.res.inf{background:color-mix(in srgb,var(--wn) 16%,transparent);color:var(--wn)}
+.fx{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.fx>div{background:var(--s2);border-radius:12px;padding:12px;display:grid;gap:6px;font-size:13px}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--b);font-size:14px}
+.kv b{font-variant-numeric:tabular-nums}
+#gb{display:flex;justify-content:center;padding:8px}
+#gb canvas{max-width:100%;height:auto!important}
+dialog{border:1px solid var(--b);border-radius:20px;background:var(--s);color:var(--t);padding:16px;width:min(340px,92vw)}
+dialog::backdrop{background:#0009;backdrop-filter:blur(4px)}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.keys .btn{padding:12px 0;text-align:center}
+#cd{width:100%;text-align:right;font:600 22px ui-monospace,monospace}
+header{flex-wrap:wrap}
+</style>
 </head>
-<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col font-sans selection:bg-brand-500 selection:text-white">
+<body>
+<header>
+  <div class="brand"><div class="logo">Σ</div><div><h1>Estimation Lab</h1><p>Length, area, volume, Fermi, probability and counting</p></div></div>
+  <div class="bar"><span class="chip">★ <b id="score">0</b></span><span class="chip">⚡ <b id="streak">0</b></span><span class="chip" title="Best streak">🏆 <b id="best">0</b></span><button class="ib" id="calcb" aria-label="Open calculator">🧮</button><button class="ib" id="th" aria-label="Toggle theme">◐</button></div>
+</header>
+<nav id="nav" role="tablist"></nav>
+<main id="main"></main>
+<dialog id="calc">
+  <div class="row sp"><h3>Calculator</h3><button class="btn" id="xc" aria-label="Close">✕</button></div>
+  <input id="cd" inputmode="decimal" autocomplete="off" aria-label="Calculator display" style="margin-top:12px">
+  <div class="keys" id="keys"></div>
+</dialog>
+<script>
+const $=s=>document.querySelector(s),R=(a,b)=>Math.random()*(b-a)+a,I=(a,b)=>Math.floor(R(a,b+1)),
+C=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim(),
+F=n=>n<2?1:n*F(n-1),Cn=(n,k)=>F(n)/(F(k)*F(n-k)),
+TABS=[["1d","1D Length"],["2d","2D Area"],["3d","3D Volume"],["fermi","Fermi Engine"],["stat","Galton Board"],["combo","Combinatorics"]],
+M={},loaded={};
+let score=0,streak=0,best=0,cur,T,G,FS;
 
-  <!-- TOP HEADER NAVBAR -->
-  <header class="sticky top-0 z-40 glass-card border-b border-gray-800 px-4 py-3 flex items-center justify-between shadow-xl">
-    <div class="flex items-center space-x-3">
-      <div class="p-2 bg-brand-600/30 text-brand-400 rounded-xl border border-brand-500/30">
-        <i data-lucide="calculator" class="w-6 h-6"></i>
-      </div>
-      <div>
-        <h1 class="text-base font-bold bg-gradient-to-r from-brand-400 via-purple-400 to-accent-500 bg-clip-text text-transparent">
-          Estimation Lab <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">v5.0 Pro</span>
-        </h1>
-        <p class="text-xs text-gray-400 hidden sm:block">Advanced Procedural Physics, Math & Fermi Reasoning Engine</p>
-      </div>
-    </div>
+const load=u=>loaded[u]||(loaded[u]=new Promise((ok,no)=>{const s=document.createElement("script");s.src=u;s.onload=ok;s.onerror=()=>{delete loaded[u];no()};document.head.appendChild(s)}));
+function fit(c,r){const d=devicePixelRatio||1,w=c.clientWidth||320,h=Math.round(w*r),x=c.getContext("2d");c.width=w*d;c.height=h*d;c.style.height=h+"px";x.setTransform(d,0,0,d,0,0);return[x,w,h]}
+const rr=(x,a,b,w,h)=>{x.beginPath();x.roundRect(a,b,w,h,6);x.fill()};
+const ST={get(){try{return JSON.parse(localStorage.getItem("estlab")||"{}")}catch{return{}}},put(){try{localStorage.setItem("estlab",JSON.stringify({score,best,theme:document.documentElement.dataset.theme||""}))}catch{}}};
+function hud(){$("#score").textContent=score;$("#streak").textContent=streak;$("#best").textContent=best}
+function award(ok,p){if(ok){score+=p;streak++;best=Math.max(best,streak)}else streak=0;hud();ST.put()}
+function res(id,cls,msg){const r=$("#r-"+id);r.className="res "+cls;r.textContent=msg}
 
-    <!-- PERSISTENT METRICS & TOOLS -->
-    <div class="flex items-center space-x-2 sm:space-x-4 text-xs">
-      <div class="glass-card px-3 py-1.5 rounded-lg flex items-center space-x-2 border border-gray-800">
-        <i data-lucide="award" class="w-4 h-4 text-amber-400"></i>
-        <span class="text-gray-400 hidden sm:inline">Score:</span>
-        <span id="global-score" class="font-mono font-bold text-amber-400">0</span>
-      </div>
-      <div class="glass-card px-3 py-1.5 rounded-lg flex items-center space-x-2 border border-gray-800">
-        <i data-lucide="zap" class="w-4 h-4 text-emerald-400"></i>
-        <span class="text-gray-400 hidden sm:inline">Streak:</span>
-        <span id="global-streak" class="font-mono font-bold text-emerald-400">0</span>
-      </div>
-      <button onclick="toggleCalcModal()" class="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 transition" title="Scientific Calculator">
-        <i data-lucide="binary" class="w-4 h-4"></i>
-      </button>
-    </div>
-  </header>
+M["1d"]={tol:.15,pts:100,
+gen(){this.k=+R(2,10).toFixed(1);this.f=R(.5,1);this.ans=this.k;this.desc="How many blue unit segments fit into the red bar?"},
+note(){return"Length ÷ unit = "+this.k},
+draw(){const[x,w,h]=fit($("#c-1d"),.34),u=(w-48)/10*this.f,y1=h*.2,y2=h*.62;x.font="12px system-ui";x.fillStyle=C("--m");x.fillText("Target bar",24,y1-8);x.fillText("Unit segment = 1",24,y2-8);x.fillStyle=C("--no");rr(x,24,y1,this.k*u,24);x.fillStyle=C("--a");rr(x,24,y2,u,24)}};
 
-  <!-- DESKTOP TAB NAVIGATION BAR -->
-  <nav class="hidden md:flex bg-gray-900/90 border-b border-gray-800 px-4 py-2 space-x-2 overflow-x-auto no-scrollbar">
-    <button onclick="switchTab('1d')" id="tab-btn-1d" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap bg-brand-600 text-white shadow-lg shadow-brand-600/30">
-      <i data-lucide="ruler" class="w-4 h-4"></i><span>1D Length</span>
-    </button>
-    <button onclick="switchTab('2d')" id="tab-btn-2d" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap text-gray-400 hover:text-white hover:bg-gray-800">
-      <i data-lucide="square" class="w-4 h-4"></i><span>2D Area</span>
-    </button>
-    <button onclick="switchTab('3d')" id="tab-btn-3d" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap text-gray-400 hover:text-white hover:bg-gray-800">
-      <i data-lucide="box" class="w-4 h-4"></i><span>3D Volume</span>
-    </button>
-    <button onclick="switchTab('fermi')" id="tab-btn-fermi" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap text-gray-400 hover:text-white hover:bg-gray-800">
-      <i data-lucide="brain" class="w-4 h-4"></i><span>Fermi Engine</span>
-    </button>
-    <button onclick="switchTab('stat')" id="tab-btn-stat" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap text-gray-400 hover:text-white hover:bg-gray-800">
-      <i data-lucide="line-chart" class="w-4 h-4"></i><span>Stats & CLT</span>
-    </button>
-    <button onclick="switchTab('combo')" id="tab-btn-combo" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 whitespace-nowrap text-gray-400 hover:text-white hover:bg-gray-800">
-      <i data-lucide="git-fork" class="w-4 h-4"></i><span>Combinatorics</span>
-    </button>
-  </nav>
+M["2d"]={tol:.2,pts:100,
+gen(){const s=this.s=["rectangle","triangle","circle"][I(0,2)];this.a=I(4,10);this.b=I(3,6);this.r=I(2,4);this.ans=Math.round({rectangle:this.a*this.b,triangle:this.a*this.b/2,circle:Math.PI*this.r**2}[s]);this.desc="About how many unit tiles would cover this "+s+"?"},
+note(){return"Area ≈ "+this.ans+" tiles"},
+draw(){const[x,w,h]=fit($("#c-2d"),.55),s=this.s,ew=s=="circle"?2*this.r:this.a,eh=s=="circle"?2*this.r:this.b,k=Math.min((w-110)/ew,(h-30)/eh,34),ox=20,oy=(h-eh*k)/2;
+x.beginPath();
+if(s=="rectangle")x.rect(ox,oy,ew*k,eh*k);
+else if(s=="triangle"){x.moveTo(ox,oy+eh*k);x.lineTo(ox+ew*k,oy+eh*k);x.lineTo(ox+ew*k/2,oy);x.closePath()}
+else x.arc(ox+this.r*k,oy+this.r*k,this.r*k,0,7);
+x.fillStyle=C("--a")+"55";x.fill();x.strokeStyle=C("--a");x.lineWidth=2;x.stroke();
+x.fillStyle=C("--a2");x.fillRect(w-70,28,k,k);x.fillStyle=C("--m");x.font="12px system-ui";x.fillText("1 unit tile",w-70,28+k+16)}};
 
-  <!-- MAIN VIEWPORT CONTAINER -->
-  <main class="flex-1 p-3 sm:p-6 max-w-7xl w-full mx-auto pb-24 md:pb-8">
-    
-    <!-- ================= TAB 1: 1D LENGTH ================= -->
-    <section id="tab-1d" class="tab-content block space-y-4">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 glass-card rounded-2xl p-4 sm:p-6 flex flex-col justify-between shadow-2xl">
-          <div>
-            <div class="flex items-center justify-between mb-4">
-              <h2 class="text-lg font-bold flex items-center gap-2 text-brand-400">
-                <i data-lucide="ruler" class="w-5 h-5"></i> Procedural 1D Linear Scale Estimation
-              </h2>
-              <button onclick="generate1DChallenge()" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-xs rounded-lg border border-gray-700 text-gray-300 font-medium transition flex items-center gap-1">
-                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> New Challenge
-              </button>
-            </div>
-            <p id="desc-1d" class="text-sm text-gray-300 mb-4"></p>
-            <div class="relative w-full bg-gray-900 border border-gray-800 rounded-xl p-4 min-h-[220px] flex flex-col justify-center items-center shadow-inner">
-              <canvas id="canvas-1d" class="w-full h-36 rounded-lg bg-gray-950/80"></canvas>
-            </div>
-          </div>
+const S3=[["sphere",()=>{const r=R(1.3,2.1);return[new THREE.SphereGeometry(r,32,24),4/3*Math.PI*r**3,2*r]}],
+["cylinder",()=>{const r=R(1,1.8),h=R(1.8,3.8);return[new THREE.CylinderGeometry(r,r,h,40),Math.PI*r*r*h,h]}],
+["cone",()=>{const r=R(1.2,2),h=R(2.4,4);return[new THREE.ConeGeometry(r,h,40),Math.PI*r*r*h/3,h]}],
+["square pyramid",()=>{const r=R(1.4,2.2),h=R(2.4,4);return[new THREE.ConeGeometry(r,h,4),2*r*r*h/3,h]}],
+["hexagonal prism",()=>{const r=R(1.1,1.8),h=R(1.8,3.6);return[new THREE.CylinderGeometry(r,r,h,6),1.5*Math.sqrt(3)*r*r*h,h]}],
+["box",()=>{const a=R(1.6,3.2),b=R(1.4,3),c=R(1.6,3.2);return[new THREE.BoxGeometry(a,b,c),a*b*c,b]}],
+["octahedron",()=>{const r=R(1.5,2.3);return[new THREE.OctahedronGeometry(r),4/3*r**3,2*r]}],
+["torus",()=>{const a=R(1.3,1.9),b=R(.5,.8);return[new THREE.TorusGeometry(a,b,20,48),2*Math.PI**2*a*b*b,2*b,1]}]],
+U3=[["cube",()=>[new THREE.BoxGeometry(1,1,1),1,1]],["ball",()=>[new THREE.SphereGeometry(.6,24,18),4/3*Math.PI*.216,1.2]],["can",()=>[new THREE.CylinderGeometry(.5,.5,1.2,28),Math.PI*.25*1.2,1.2]],["cone",()=>[new THREE.ConeGeometry(.7,1.4,28),Math.PI*.49*1.4/3,1.4]]];
+M["3d"]={tol:.2,pts:200,
+gen(){const s=pick(S3),u=pick(U3);this.sg=s[1]();this.ug=u[1]();this.un=u[0];this.ans=Math.round(this.sg[1]/this.ug[1]);this.desc="Drag to rotate. About how many small amber "+u[0]+"s match the volume of the large teal "+s[0]+"? Both are drawn to the same scale."},
+note(){return"Large ≈ "+this.sg[1].toFixed(1)+" units³; one small "+this.un+" ≈ "+this.ug[1].toFixed(2)+" units³; ratio ≈ "+this.ans},
+draw(){if(!T)return;if(T.g){T.g.traverse(o=>{o.geometry&&o.geometry.dispose();o.material&&o.material.dispose()});T.sc.remove(T.g)}
+const g=T.g=new THREE.Group(),put=([ge,v,h,rx],c,x)=>{const m=new THREE.Mesh(ge,new THREE.MeshStandardMaterial({color:c,roughness:.45}));m.position.set(x,-2+h/2,0);if(rx)m.rotation.x=Math.PI/2;m.add(new THREE.LineSegments(new THREE.EdgesGeometry(ge,30),T.lm));g.add(m)};
+put(this.sg,0x14b8a6,-1.3);put(this.ug,0xf59e0b,3.6);T.sc.add(g)}};
 
-          <div class="mt-6 space-y-4">
-            <div class="flex flex-col sm:flex-row gap-4 items-center">
-              <label class="text-sm font-medium text-gray-300 whitespace-nowrap">Your Estimate:</label>
-              <input type="number" id="input-1d" min="0.1" step="any" placeholder="Enter count..." class="w-full sm:w-48 bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white font-mono focus:ring-2 focus:ring-brand-500 outline-none">
-              <button onclick="submit1D()" class="w-full sm:w-auto px-6 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl transition shadow-lg shadow-brand-600/30">
-                Check Estimate
-              </button>
-            </div>
-          </div>
-        </div>
+M.combo={tol:0,pts:150,
+gen(){const t=this.t=I(0,5);
+if(t==0){const n=this.n=I(4,8);this.ans=n*(n-1)/2;this.L=Array.from({length:n},(_,i)=>({a:Math.PI*i/n+R(-.12,.12),px:R(.3,.7),py:R(.3,.7)}));this.desc=n+" lines, no two parallel and no three through one point. What is the maximum number of intersection points?";this.f="C("+n+",2) = "+n+"×"+(n-1)+"÷2"}
+else if(t==1){const a=this.a=I(2,5),b=this.b=I(2,4);this.ans=Cn(a+b,a);this.desc="Walk from the green corner to the red corner of a "+a+"×"+b+" grid, moving only right or down. How many routes exist?";this.f="("+a+"+"+b+")! ÷ ("+a+"! × "+b+"!)"}
+else if(t==2){const n=this.n=I(5,9),k=this.k=I(2,4);this.ans=Cn(n,k);this.desc="How many different committees of "+k+" can be chosen from "+n+" people?";this.f="C("+n+","+k+") = "+n+"! ÷ ("+k+"! × "+(n-k)+"!)"}
+else if(t==3){const n=this.n=this.k=I(4,7);this.ans=F(n);this.desc=n+" different books are lined up on a shelf. In how many orders can they be arranged?";this.f=n+"! = "+this.ans}
+else if(t==4){const n=this.n=I(5,9),k=this.k=I(2,4);this.ans=F(n)/F(n-k);this.desc="A lock uses "+k+" different symbols chosen from "+n+", and order matters. How many codes are possible?";this.f=n+"! ÷ "+(n-k)+"!"}
+else{const n=this.n=this.k=I(4,8);this.ans=2**n;this.desc="A shop offers "+n+" toppings. A pizza can have any set of toppings, including none. How many different pizzas can be made?";this.f="2^"+n}},
+note(){return"Formula: "+this.f},
+draw(){const[x,w,h]=fit($("#c-combo"),.5),t=this.t;x.lineWidth=2;
+if(t==0){x.strokeStyle=C("--wn");this.L.forEach(l=>{const cx=l.px*w,cy=l.py*h,dx=Math.cos(l.a)*w,dy=Math.sin(l.a)*w;x.beginPath();x.moveTo(cx-dx,cy-dy);x.lineTo(cx+dx,cy+dy);x.stroke()})}
+else if(t==1){const a=this.a,b=this.b,k=Math.min((w-80)/a,(h-60)/b,60),ox=(w-a*k)/2,oy=(h-b*k)/2;x.strokeStyle=C("--m");
+for(let i=0;i<=a;i++){x.beginPath();x.moveTo(ox+i*k,oy);x.lineTo(ox+i*k,oy+b*k);x.stroke()}
+for(let j=0;j<=b;j++){x.beginPath();x.moveTo(ox,oy+j*k);x.lineTo(ox+a*k,oy+j*k);x.stroke()}
+x.fillStyle=C("--ok");x.beginPath();x.arc(ox,oy,7,0,7);x.fill();x.fillStyle=C("--no");x.beginPath();x.arc(ox+a*k,oy+b*k,7,0,7);x.fill()}
+else{const n=this.n,r=Math.min(22,(w-40)/(n*2.4));for(let i=0;i<n;i++){x.beginPath();x.arc(w/2+(i-(n-1)/2)*r*2.4,h/2,r,0,7);x.fillStyle=i<this.k?C("--a"):C("--s");x.fill();x.strokeStyle=C("--a");x.stroke()}}}};
 
-        <div class="glass-card rounded-2xl p-4 sm:p-6 flex flex-col justify-between space-y-4 shadow-2xl">
-          <div>
-            <h3 class="text-md font-bold mb-3 text-gray-200">Precision Feedback</h3>
-            <div id="result-1d" class="p-4 rounded-xl bg-gray-900/60 border border-gray-800 text-sm text-gray-400 text-center">
-              Estimate how many unit segments fit into the target baseline.
-            </div>
-          </div>
-          <div>
-            <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Metrics</h4>
-            <ul id="info-1d" class="text-xs space-y-2 text-gray-300 bg-gray-900/40 p-3 rounded-lg border border-gray-800 font-mono">
-              <li>Target: <span class="text-white">--</span></li>
-              <li>Unit Segment: <span class="text-white">--</span></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
+function fresh(id){const m=M[id];m.done=false;m.gen();$("#d-"+id).textContent=m.desc;$("#i-"+id).value="";$("#n-"+id).textContent="";res(id,"","Enter your answer, then press Check.");m.draw()}
+function check(id){const m=M[id],v=parseFloat($("#i-"+id).value);if(isNaN(v)||m.done)return;m.done=true;const e=Math.abs(v-m.ans)/m.ans,ok=e<=m.tol;award(ok,m.pts);res(id,ok?"ok":"no",(ok?"Great estimate! ":"Not quite. ")+"The answer is "+m.ans+"; you were off by "+(e*100).toFixed(1)+"%.");$("#n-"+id).textContent=m.note()}
+function reveal(id){const m=M[id];if(!m.done){m.done=true;award(false,0)}$("#i-"+id).value=m.ans;res(id,"inf","The answer is "+m.ans+". Revealed answers earn no points.");$("#n-"+id).textContent=m.note()}
 
-    <!-- ================= TAB 2: 2D AREA ================= -->
-    <section id="tab-2d" class="tab-content hidden space-y-4">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 glass-card rounded-2xl p-4 sm:p-6 flex flex-col justify-between shadow-2xl">
-          <div>
-            <div class="flex items-center justify-between mb-4">
-              <h2 class="text-lg font-bold flex items-center gap-2 text-purple-400">
-                <i data-lucide="square" class="w-5 h-5"></i> Procedural 2D Area Tiling & Coverage
-              </h2>
-              <button onclick="generate2DChallenge()" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-xs rounded-lg border border-gray-700 text-gray-300 font-medium transition flex items-center gap-1">
-                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> New Shape
-              </button>
-            </div>
-            <p id="desc-2d" class="text-sm text-gray-300 mb-4"></p>
-            <div class="relative w-full bg-gray-900 border border-gray-800 rounded-xl p-4 flex justify-center items-center shadow-inner">
-              <canvas id="canvas-2d" width="600" height="300" class="w-full h-64 rounded-lg bg-gray-950/80"></canvas>
-            </div>
-          </div>
+async function init3d(){
+await load("https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js");
+await load("https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js");
+const el=$("#v-3d"),r=new THREE.WebGLRenderer({antialias:true,alpha:true}),sc=new THREE.Scene(),cam=new THREE.OrthographicCamera(-1,1,1,-1,.1,200);
+r.setPixelRatio(Math.min(devicePixelRatio,2));el.appendChild(r.domElement);cam.position.set(9,8,16);cam.lookAt(0,0,0);
+const ctl=new THREE.OrbitControls(cam,r.domElement);ctl.enableDamping=true;
+sc.add(new THREE.AmbientLight(0xffffff,.75));const dl=new THREE.DirectionalLight(0xffffff,.7);dl.position.set(8,16,10);sc.add(dl);
+T={r,sc,cam,ctl,lm:new THREE.LineBasicMaterial({color:0x0f766e})};
+const rs=()=>{const w=el.clientWidth,h=el.clientHeight,a=w/h,d=6;cam.left=-d*a;cam.right=d*a;cam.top=d;cam.bottom=-d;cam.updateProjectionMatrix();r.setSize(w,h)};
+new ResizeObserver(rs).observe(el);rs()}
+function loop(){if(!T||T.run)return;T.run=true;(function f(){if(cur!="3d"){T.run=false;return}requestAnimationFrame(f);T.ctl.update();T.r.render(T.sc,T.cam)})()}
 
-          <div class="mt-6 flex flex-col sm:flex-row gap-4 items-center">
-            <label class="text-sm font-medium text-gray-300 whitespace-nowrap">Units Required:</label>
-            <input type="number" id="input-2d" min="1" step="1" placeholder="Estimated tiles..." class="w-full sm:w-48 bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white font-mono focus:ring-2 focus:ring-purple-500 outline-none">
-            <button onclick="submit2D()" class="w-full sm:w-auto px-6 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl transition shadow-lg shadow-purple-600/30">
-              Check 2D Area
-            </button>
-          </div>
-        </div>
+const pick=a=>a[I(0,a.length-1)],
+POP=[["the world",8.1e9],["India",1.45e9],["China",1.41e9],["the USA",3.4e8],["Brazil",2.1e8],["Japan",1.25e8],["Germany",8.4e7],["Australia",2.7e7],["Sri Lanka",2.2e7],["Tokyo",1.4e7],["London",9e6],["Singapore",5.9e6],["Iceland",3.8e5]],
+ACT=[["steps","How many steps do the people of {P} walk in {T}?","Steps per person per day",7e3],
+["breaths","How many breaths do the people of {P} take in {T}?","Breaths per person per day",2.2e4],
+["litres of water","How many litres of water do the people of {P} drink in {T}?","Litres drunk per person per day",2],
+["text messages","How many text messages do the people of {P} send in {T}?","Messages per person per day",40],
+["heartbeats","How many times do the hearts of {P} beat in {T}?","Heartbeats per person per day",1e5],
+["meals","How many meals do the people of {P} eat in {T}?","Meals per person per day",3],
+["photos","How many photos do the people of {P} take in {T}?","Photos per person per day",3],
+["toilet flushes","How many times do the people of {P} flush a toilet in {T}?","Flushes per person per day",5],
+["blinks","How many times do the people of {P} blink in {T}?","Blinks per person per day",1.4e4],
+["kg of waste","How many kilograms of waste do the people of {P} throw away in {T}?","Kilograms of waste per person per day",1.5]],
+PER=[["a day",1],["a week",7],["a month",30],["a year",365],["a decade",3650],["a lifetime",29200]],
+MOD=[["adults",.75,"Share who are adults"],["smartphone owners",.65,"Share with a smartphone"],["city dwellers",.55,"Share living in cities"]];
+function genFermi(lv){const n=Math.round(10**R(3,6.6)),pop=Math.random()<.3?["a city of "+n.toLocaleString("en"),n]:pick(POP),act=pick(ACT),per=lv?pick(PER):PER[0],mods=[...MOD].sort(()=>Math.random()-.5).slice(0,Math.max(0,lv-1)),f=[["Population of "+pop[0],pop[1]],[act[2],act[3]]];
+if(lv)f.push(["Days in "+per[0],per[1]]);mods.forEach(m=>f.push([m[2],m[1]]));
+const total=f.reduce((a,x)=>a*x[1],1),fm=v=>v>=.01&&v<1e4?+v.toPrecision(3)+"":v.toExponential(1);
+return{c:"Population × habits",u:act[0],t:act[1].replace("{P}",pop[0]).replace("{T}",per[0])+(mods.length?" Count only "+mods.map(m=>m[0]).join(" and ")+".":""),
+f:f.map(([nm,t])=>t<=1?[nm,.05,1,t]:[nm,t/10**R(.3,1.4),t*10**R(.3,1.4),t]),
+e:f.map(x=>fm(x[1])).join(" × ")+" ≈ "+total.toExponential(2)+" "+act[0]+"."}}
+function newFermi(){const q=genFermi(+$("#fl").value);FS={q,done:false,v:q.f.map(f=>10**R(Math.log10(f[1]),Math.log10(f[2])))};
+$("#fc").textContent=q.c;$("#ft").textContent=q.t;$("#fu").textContent=q.u;$("#fz").hidden=true;
+$("#fx").innerHTML=q.f.map((f,i)=>`<div><div class="row sp"><span>${f[0]}</span><b id="fv${i}"></b></div><input type="range" min="${Math.log10(f[1])}" max="${Math.log10(f[2])}" step=".01" value="${Math.log10(FS.v[i])}" data-i="${i}" aria-label="${f[0]}"></div>`).join("");fcalc()}
+function fcalc(){FS.tot=FS.v.reduce((a,b)=>a*b,1);FS.v.forEach((v,i)=>$("#fv"+i).textContent=v.toExponential(2));$("#fo").textContent=FS.tot.toExponential(2)}
+function endFermi(sub){const q=FS.q,t=q.f.reduce((a,f)=>a*f[3],1),dex=Math.abs(Math.log10(FS.tot/t)),lv=+$("#fl").value,tol=[1,.5,.35,.25][lv],ok=dex<=tol;
+if(!FS.done){FS.done=true;award(sub&&ok,100*(lv+1))}
+const z=$("#fz");z.hidden=false;z.className="res "+(!sub?"inf":ok?"ok":"no");
+z.textContent=(sub?(ok?"Within tolerance. ":"Outside tolerance. "):"Revealed. ")+"You: "+FS.tot.toExponential(2)+" · Actual: "+t.toExponential(2)+" "+q.u+" (off by "+dex.toFixed(2)+" orders of magnitude, limit ±"+tol+").\n"+q.e}
 
-        <div class="glass-card rounded-2xl p-4 sm:p-6 flex flex-col justify-between space-y-4 shadow-2xl">
-          <div>
-            <h3 class="text-md font-bold mb-3 text-gray-200">2D Precision Score</h3>
-            <div id="result-2d" class="p-4 rounded-xl bg-gray-900/60 border border-gray-800 text-sm text-gray-400 text-center">
-              Estimate total unit tiles covering the bounding shape.
-            </div>
-          </div>
-          <div class="bg-gray-900/40 p-3 rounded-lg border border-gray-800 text-xs text-gray-400 space-y-1">
-            <p><strong class="text-gray-200">Methodology:</strong> Multiply width and height dimensions and account for irregular boundaries.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+async function initG(){await load("https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js");
+const{Engine,Render,Runner,Bodies,Composite,Events,Body}=Matter,W=360,H=400,sp=30,cx=W/2,x0=cx-5*sp,ye=272,en=Engine.create(),rd=Render.create({element:$("#gb"),engine:en,options:{width:W,height:H,wireframes:false,background:"transparent"}}),ru=Runner.create(),add=b=>Composite.add(en.world,b),
+bin=o=>Math.min(9,Math.max(0,Math.floor((o.position.x-x0)/sp))),tot=()=>G.c.reduce((a,b)=>a+b,0),top=()=>Math.max(1,...G.c,...G.c.map((_,i)=>Cn(9,i)/512*tot()));
+for(let r=0;r<9;r++)for(let c=0;c<=r;c++)add(Bodies.circle(cx+(c-r/2)*sp,42+r*26,3.5,{isStatic:true,label:"peg",render:{fillStyle:"#818cf8"}}));
+[x0-4,x0+10*sp+4].forEach(x=>add(Bodies.rectangle(x,H/2,6,H,{isStatic:true,label:"wall",render:{fillStyle:"#64748b"}})));
+G={en,rd,ru,cx,H,c:Array(10).fill(0),d:0};
+Events.on(en,"collisionStart",e=>e.pairs.forEach(({bodyA:a,bodyB:b})=>{const k=a.label=="ball"?a:b.label=="ball"?b:0;if(k&&(k==a?b:a).label=="peg")Body.setVelocity(k,{x:(Math.random()<.5?-1:1)*1.3,y:Math.min(k.velocity.y,2)*.6})}));
+Events.on(en,"afterUpdate",()=>Composite.allBodies(en.world).forEach(o=>{if(o.label!="ball")return;if(!o.cnt&&o.position.y>ye){o.cnt=1;G.c[bin(o)]++;o.collisionFilter.mask=0}if(o.cnt&&o.position.y>H-6-G.c[bin(o)]/top()*(H-ye-10))Composite.remove(en.world,o)}));
+Events.on(rd,"afterRender",()=>{const x=rd.context,t=top(),bh=H-ye-10,n=tot();x.fillStyle="#818cf88c";G.c.forEach((v,i)=>x.fillRect(x0+i*sp+2,H-6-v/t*bh,sp-4,v/t*bh));
+x.strokeStyle="#f59e0b";x.lineWidth=2;x.setLineDash([5,4]);x.beginPath();G.c.forEach((_,i)=>{const px=x0+i*sp+sp/2,py=H-6-Cn(9,i)/512*n/t*bh;i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke();x.setLineDash([])});
+ru.enabled=false;Runner.run(ru,en);setInterval(gstats,400)}
+function drop(n){if(!G)return;for(let i=0;i<n;i++)setTimeout(()=>{G.d++;Matter.Composite.add(G.en.world,Matter.Bodies.circle(G.cx+R(-1,1),8,6.5,{label:"ball",restitution:.35,friction:0,frictionAir:.01,collisionFilter:{group:-1},render:{fillStyle:"#f59e0b"}}))},i*60)}
+function resetG(){if(!G)return;Matter.Composite.allBodies(G.en.world).filter(o=>o.label=="ball").forEach(o=>Matter.Composite.remove(G.en.world,o));G.c.fill(0);G.d=0;gstats()}
+function gstats(){if(!G||$("#t-stat").hidden)return;const c=G.c,n=c.reduce((a,b)=>a+b,0);$("#gn").textContent=G.d;$("#gs").textContent=n;
+if(!n){["gm","gd","gf"].forEach(i=>$("#"+i).textContent="–");return}
+const m=c.reduce((a,v,i)=>a+v*i,0)/n,sd=Math.sqrt(c.reduce((a,v,i)=>a+v*(i-m)**2,0)/n),tv=c.reduce((a,v,i)=>a+Math.abs(v/n-Cn(9,i)/512),0)/2;
+$("#gm").textContent=m.toFixed(2);$("#gd").textContent=sd.toFixed(2);$("#gf").textContent=(100*(1-tv)).toFixed(0)+"%"}
 
-    <!-- ================= TAB 3: 3D VOLUME ================= -->
-    <section id="tab-3d" class="tab-content hidden space-y-4">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 glass-card rounded-2xl p-4 sm:p-6 flex flex-col justify-between shadow-2xl">
-          <div>
-            <div class="flex items-center justify-between mb-4">
-              <h2 class="text-lg font-bold flex items-center gap-2 text-cyan-400">
-                <i data-lucide="box" class="w-5 h-5"></i> Procedural 3D Volume & Packing
-              </h2>
-              <button onclick="generate3DChallenge()" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-xs rounded-lg border border-gray-700 text-gray-300 font-medium transition flex items-center gap-1">
-                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> New Container
-              </button>
-            </div>
-            <p id="desc-3d" class="text-sm text-gray-300 mb-3"></p>
-            <div id="viewport-3d" class="relative w-full h-72 bg-gray-950 rounded-xl border border-gray-800 overflow-hidden shadow-inner">
-              <div class="absolute top-2 left-2 text-[10px] bg-black/60 px-2 py-1 rounded text-gray-400 z-10 pointer-events-none">
-                Orbit Controls: Drag to rotate | Scroll to zoom
-              </div>
-            </div>
-          </div>
+function evalExpr(s){let p=0;const w=()=>{while(s[p]==" ")p++},
+num=()=>{w();if(s[p]=="("){p++;const v=add();w();if(s[p++]!=")")throw 0;return v}if(s[p]=="-"){p++;return-num()}const m=/^\d*\.?\d+|^\d+\.?/.exec(s.slice(p));if(!m)throw 0;p+=m[0].length;return parseFloat(m[0])},
+mul=()=>{let v=num();for(w();s[p]=="*"||s[p]=="/";w()){const o=s[p++],r=num();v=o=="*"?v*r:v/r}return v},
+add=()=>{let v=mul();for(w();s[p]=="+"||s[p]=="-";w()){const o=s[p++],r=mul();v=o=="+"?v+r:v-r}return v};
+const v=add();w();if(p<s.length)throw 0;return v}
+function key(k){const d=$("#cd");if(d.value=="Error")d.value="";if(k=="C")d.value="";else if(k=="⌫")d.value=d.value.slice(0,-1);else if(k=="=")ev();else d.value+=k}
+function ev(){const d=$("#cd");if(!d.value)return;try{const v=evalExpr(d.value);d.value=Number.isFinite(v)?+v.toPrecision(12):"Error"}catch{d.value="Error"}}
 
-          <div class="mt-6 flex flex-col sm:flex-row gap-4 items-center">
-            <label class="text-sm font-medium text-gray-300 whitespace-nowrap">Volume Units:</label>
-            <input type="number" id="input-3d" min="1" step="1" placeholder="Estimated count..." class="w-full sm:w-48 bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white font-mono focus:ring-2 focus:ring-cyan-500 outline-none">
-            <button onclick="submit3D()" class="w-full sm:w-auto px-6 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-xl transition shadow-lg shadow-cyan-600/30">
-              Check 3D Volume
-            </button>
-          </div>
-        </div>
+const quiz=(id,title,label,stage)=>`<section id="t-${id}" class="grid" hidden><div class="card"><div class="row sp"><h2>${title}</h2><button class="btn" data-new="${id}">New challenge</button></div><p class="sub" id="d-${id}"></p><div class="stage">${stage}</div><div class="row"><label for="i-${id}">${label}</label><input id="i-${id}" type="number" min="0" step="any" inputmode="decimal"><button class="btn p" data-chk="${id}">Check</button><button class="btn" data-rev="${id}">Reveal</button></div></div><div class="card"><h3>Feedback</h3><div class="res" id="r-${id}" aria-live="polite"></div><p class="sub" id="n-${id}"></p></div></section>`;
+$("#nav").innerHTML=TABS.map(([k,n])=>`<button role="tab" id="b-${k}" aria-selected="false" data-tab="${k}">${n}</button>`).join("");
+$("#main").innerHTML='<p class="sub" id="err" role="alert"></p>'
++quiz("1d","Length estimation","Unit segments","<canvas id='c-1d'></canvas>")
++quiz("2d","Area estimation","Unit tiles","<canvas id='c-2d'></canvas>")
++quiz("3d","Volume estimation","Unit objects","<div id='v-3d' style='height:clamp(240px,45vh,340px)'></div>")
++`<section id="t-fermi" hidden><div class="card"><div class="row sp"><div><h2>Fermi estimation</h2><p class="sub">Tune each factor to a realistic size and the total follows. Closer to the real value scores more.</p></div><div class="row"><select id="fl" aria-label="Difficulty"><option value="0">Easy · 2 factors · ±1.0</option><option value="1" selected>Medium · 3 factors · ±0.5</option><option value="2">Hard · 4 factors · ±0.35</option><option value="3">Expert · 5 factors · ±0.25</option></select><button class="btn" data-act="nf">New prompt</button></div></div>
+<div class="stage" style="padding:16px"><p class="sub" id="fc"></p><h3 id="ft" style="font-size:18px"></h3></div><div class="fx" id="fx"></div>
+<div class="row sp"><div><span class="sub">Your estimate</span><div><b id="fo" style="font-size:24px"></b> <span class="sub" id="fu"></span></div></div><div class="row"><button class="btn p" data-act="sf">Submit</button><button class="btn" data-act="rf">Reveal</button></div></div><div class="res" id="fz" hidden></div></div></section>`
++`<section id="t-stat" class="grid" hidden><div class="card"><div class="row sp"><div><h2>Galton board</h2><p class="sub">Nine rows of pegs, ten bins. Every bounce is a 50/50 choice, so the bars grow into a bell curve. The dashed line marks the ideal.</p></div><div class="row"><button class="btn p" data-act="g20">Drop 20</button><button class="btn p" data-act="g100">Drop 100</button><button class="btn" data-act="gr">Reset</button></div></div><div class="stage" id="gb"></div></div><div class="card"><h3>Live statistics</h3><div><div class="kv"><span>Balls dropped</span><b id="gn">0</b></div><div class="kv"><span>Balls counted</span><b id="gs">0</b></div><div class="kv"><span>Mean bin (ideal 4.50)</span><b id="gm">–</b></div><div class="kv"><span>Std dev (ideal 1.50)</span><b id="gd">–</b></div><div class="kv"><span>Match to binomial</span><b id="gf">–</b></div></div></div></section>`
++quiz("combo","Counting challenge","Your count","<canvas id='c-combo'></canvas>");
+$("#keys").innerHTML="C ( ) / 7 8 9 * 4 5 6 - 1 2 3 + 0 . ⌫ =".split(" ").map(k=>`<button class="btn${k=="="?" p":""}" data-k="${k}">${k}</button>`).join("");
 
-        <div class="glass-card rounded-2xl p-4 sm:p-6 flex flex-col justify-between space-y-4 shadow-2xl">
-          <div>
-            <h3 class="text-md font-bold mb-3 text-gray-200">Packing Analysis</h3>
-            <div id="result-3d" class="p-4 rounded-xl bg-gray-900/60 border border-gray-800 text-sm text-gray-400 text-center">
-              Estimate unit cube capacity inside the procedural container.
-            </div>
-          </div>
-          <div class="bg-gray-900/40 p-3 rounded-lg border border-gray-800 text-xs text-gray-400 space-y-1">
-            <p><strong class="text-gray-200">Spatial Ratio:</strong> Multiply length × width × height dimensions.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+function redraw(){if(cur!="3d")M[cur]?.draw?.()}
+async function show(id){if(id==cur)return;cur=id;
+TABS.forEach(([k])=>{$("#t-"+k).hidden=k!=id;$("#b-"+k).setAttribute("aria-selected",k==id)});$("#err").textContent="";
+try{if(id=="3d"&&!T){await init3d();fresh("3d")}if(id=="stat"&&!G)await initG()}catch{$("#err").textContent="This module needs an internet connection to load its library. Check your connection and select the tab again.";cur=0;return}
+if(G){const on=cur=="stat";G.ru.enabled=on;on?Matter.Render.run(G.rd):Matter.Render.stop(G.rd)}
+cur=="3d"?loop():redraw()}
 
-    <!-- ================= TAB 4: PROCEDURAL FERMI PROBLEMS ================= -->
-    <section id="tab-fermi" class="tab-content hidden space-y-6">
-      <div class="glass-card rounded-2xl p-4 sm:p-6 space-y-6 border border-emerald-500/20 shadow-2xl">
-        
-        <!-- Header Controls -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-800 pb-4">
-          <div>
-            <h2 class="text-xl font-bold text-emerald-400 flex items-center gap-2">
-              <i data-lucide="brain" class="w-6 h-6"></i> Procedural Fermi Estimation Engine
-            </h2>
-            <p class="text-xs text-gray-400">Algorithmic generator producing infinite unique order-of-magnitude reasoning challenges.</p>
-          </div>
+const A={nf:newFermi,sf:()=>endFermi(true),rf:()=>endFermi(false),g20:()=>drop(20),g100:()=>drop(100),gr:resetG};
+document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const d=b.dataset;
+if(d.tab)show(d.tab);else if(d.new)fresh(d.new);else if(d.chk)check(d.chk);else if(d.rev)reveal(d.rev);else if(d.act)A[d.act]();else if(d.k)key(d.k)});
+document.addEventListener("change",e=>{if(e.target.id=="fl")newFermi()});
+document.addEventListener("input",e=>{const i=e.target.dataset.i;if(i!=null&&FS){FS.v[i]=10**e.target.value;fcalc()}});
+document.addEventListener("keydown",e=>{if(e.key!="Enter")return;const id=e.target.id||"";if(id=="cd")ev();else if(id.startsWith("i-"))check(id.slice(2))});
+const dlg=$("#calc");$("#calcb").onclick=()=>dlg.showModal();$("#xc").onclick=()=>dlg.close();dlg.addEventListener("click",e=>{if(e.target==dlg)dlg.close()});
+$("#th").onclick=()=>{const d=document.documentElement,dk=d.dataset.theme?d.dataset.theme=="dark":matchMedia("(prefers-color-scheme:dark)").matches;d.dataset.theme=dk?"light":"dark";ST.put();redraw()};
+let q;addEventListener("resize",()=>{cancelAnimationFrame(q);q=requestAnimationFrame(redraw)});
 
-          <div class="flex items-center space-x-3">
-            <label class="text-xs text-gray-400 font-semibold">Complexity:</label>
-            <select id="fermi-diff-select" onchange="generateFermiChallenge()" class="bg-gray-900 border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-emerald-300 font-medium focus:ring-1 focus:ring-emerald-500 outline-none">
-              <option value="easy">Easy (2 Factors)</option>
-              <option value="medium" selected>Medium (3 Factors)</option>
-              <option value="hard">Hard (4 Factors)</option>
-              <option value="extreme">Fermi Master (Astrophysical)</option>
-            </select>
-            <button onclick="generateFermiChallenge()" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg transition shadow-md shadow-emerald-600/30 flex items-center gap-1">
-              <i data-lucide="shuffle" class="w-3.5 h-3.5"></i> New Fermi Prompt
-            </button>
-          </div>
-        </div>
-
-        <!-- Dynamic Challenge Question Box -->
-        <div class="bg-emerald-950/20 border border-emerald-500/30 p-4 sm:p-5 rounded-xl">
-          <div class="flex items-center justify-between text-xs text-emerald-400 font-mono mb-2">
-            <span id="fermi-category">CATEGORY: GENERATING...</span>
-            <span id="fermi-difficulty-badge" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">MEDIUM</span>
-          </div>
-          <h3 id="fermi-prompt-title" class="text-base sm:text-lg font-bold text-white mb-2">
-            Synthesizing procedural question...
-          </h3>
-          <p id="fermi-prompt-hint" class="text-xs text-gray-300 italic">
-            Deconstruct factors below to compute estimation.
-          </p>
-        </div>
-
-        <!-- Factor Breakdown Sliders Container -->
-        <div class="space-y-4">
-          <div class="flex items-center justify-between">
-            <h4 class="text-sm font-bold text-gray-200 uppercase tracking-wider">Algorithmic Parameter Breakdown</h4>
-            <span class="text-xs text-gray-400">Adjust sliders to calculate</span>
-          </div>
-
-          <div id="fermi-factors-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Dynamically populated factor sliders -->
-          </div>
-        </div>
-
-        <!-- Dynamic Calculation Result Box -->
-        <div class="glass-card p-5 rounded-xl border border-gray-800 space-y-4">
-          <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div>
-              <span class="text-xs text-gray-400 font-semibold uppercase">Your Calculated Order of Magnitude:</span>
-              <div class="flex items-baseline space-x-3 mt-1">
-                <span id="fermi-calc-value" class="text-2xl sm:text-3xl font-mono font-extrabold text-emerald-400">1.00 × 10⁰</span>
-                <span id="fermi-unit-label" class="text-xs text-gray-400 font-mono">units</span>
-              </div>
-            </div>
-            
-            <button onclick="submitFermiEstimate()" class="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/30 transition flex items-center justify-center gap-2">
-              <i data-lucide="check-circle-2" class="w-5 h-5"></i> Submit & Reveal Ground Truth
-            </button>
-          </div>
-
-          <!-- Secret Answer & Physics Explanation Overlay -->
-          <div id="fermi-solution-box" class="hidden p-4 rounded-xl bg-gray-900 border border-emerald-500/40 space-y-3">
-            <div class="flex items-center justify-between">
-              <h5 class="text-sm font-bold text-emerald-400 flex items-center gap-2">
-                <i data-lucide="check" class="w-4 h-4"></i> Algorithmic Ground Truth
-              </h5>
-              <span id="fermi-accuracy-score" class="text-xs font-mono font-bold px-2 py-1 rounded bg-emerald-500/20 text-emerald-300">
-                Precision: 0%
-              </span>
-            </div>
-            <p id="fermi-truth-text" class="text-sm text-gray-200 font-mono"></p>
-            <div id="fermi-explanation-text" class="text-xs text-gray-300 leading-relaxed bg-black/40 p-3 rounded-lg border border-gray-800"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= TAB 5: STATS & CLT ================= -->
-    <section id="tab-stat" class="tab-content hidden space-y-6">
-      <div class="glass-card rounded-2xl p-4 sm:p-6 space-y-6 border border-blue-500/20 shadow-2xl">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2">
-              <i data-lucide="line-chart" class="w-5 h-5"></i> Central Limit Theorem & Sampling Simulation
-            </h2>
-            <p class="text-xs text-gray-400">Observe sample means converge into a Gaussian Normal Distribution as sample size $N$ increases.</p>
-          </div>
-          <div class="flex space-x-2">
-            <button onclick="runCLTSample(1)" class="px-3 py-1.5 bg-blue-600/80 hover:bg-blue-500 text-white text-xs rounded-lg font-medium">Draw 1 Sample</button>
-            <button onclick="runCLTSample(100)" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs rounded-lg font-semibold shadow-md shadow-blue-600/30">+100 Samples</button>
-            <button onclick="resetCLT()" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-xs rounded-lg text-gray-300">Reset</button>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div class="lg:col-span-2 space-y-4">
-            <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 h-64">
-              <canvas id="clt-chart"></canvas>
-            </div>
-          </div>
-
-          <div class="glass-card p-4 rounded-xl space-y-4 text-xs">
-            <h3 class="font-bold text-sm text-gray-200">Sampling Controls</h3>
-            
-            <div class="space-y-2">
-              <label class="text-gray-400">Base Distribution Type:</label>
-              <select id="clt-dist-type" onchange="resetCLT()" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-white outline-none">
-                <option value="uniform">Uniform (Flat)</option>
-                <option value="skewed">Right-
+{const o=ST.get();score=+o.score||0;best=+o.best||0;if(o.theme)document.documentElement.dataset.theme=o.theme;hud()}
+["1d","2d","combo"].forEach(fresh);newFermi();show("1d");
+</script>
+</body>
+</html>
